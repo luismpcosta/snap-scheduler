@@ -1,0 +1,40 @@
+server:
+  port: ${SERVER_PORT:8118}
+  servlet.context-path: ${BASE_PATH:/}
+  tomcat:
+    accept-count: ${ACCEPT_COUNT:256}
+    threads:
+      max: ${MAX_THREADS:4}
+
+logging:
+  level: 
+    root: INFO
+    io:
+      snap:
+        scheduler: DEBUG
+
+snap:
+  scheduler:
+    enabled: true
+    db-polling-interval: 1m
+
+spring:
+
+  #
+  # Datasource configuration
+  #
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: ${DB_JDBC_URL:jdbc:mariadb://localhost:3306/snap}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    hikari:
+      driverClassName: org.mariadb.jdbc.Driver
+      connectionInitSql: SELECT 1
+      minimumIdle: 1
+      maximumPoolSize: 5
+      connectionTimeout: 60000 
+      idleTimeout: 600000 
+      maxLifetime: 1800000 
+      poolName: snap-pool
+      autoCommit: false
