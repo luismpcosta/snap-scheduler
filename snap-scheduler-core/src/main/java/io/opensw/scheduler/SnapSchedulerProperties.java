@@ -17,7 +17,7 @@ public class SnapSchedulerProperties {
 	/**
 	 * snap scheduler enabled status
 	 */
-	private boolean enabled;
+	private boolean enabled = true;
 
 	/** database polling tasks interval */
 	@DurationUnit( ChronoUnit.MINUTES )
