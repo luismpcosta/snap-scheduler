@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+
+<!-- http://checkstyle.sourceforge.net/checks.html -->
+
+    <module name="Checker">
+    <property name="charset" value="UTF-8"/>
+
+    <!-- All packages must have package-info.java -->
+    <module name="JavadocPackage"/>
+
+    <module name="NewlineAtEndOfFile">
+        <property name="lineSeparator" value="lf_cr_crlf"/>
+        <property name="fileExtensions" value="java,xml"/>
+    </module>
+
+    <module name="TreeWalker">
+
+<!--        <module name="AvoidStarImport">-->
+<!--            <property name="excludes" value="java.io,java.net,java.lang.Math"/>-->
+<!--            <property name="allowClassImports" value="false"/>-->
+<!--            <property name="allowStaticMemberImports" value="false"/>-->
+<!--        </module>-->
+
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="tokens" value="METHOD_DEF,ANNOTATION_FIELD_DEF"/>
+        </module>
+
+        <!-- Imports -->
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+        <module name="ModifierOrder"/>
+
+        <module name="TrailingComment"/>
+
+        <!-- TODO exclude main class-->
+        <!--<module name="HideUtilityClassConstructor" />-->
+
+        <module name="ArrayTypeStyle"/>
+
+        <module name="UpperEll"/>
+    </module>
+
+</module>
