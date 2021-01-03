@@ -34,7 +34,7 @@ To use lock annotation and prevent multiple runs of task you need:
 3. Annotate @Scheduled methods with @SnapLock
 
 ## 1. Import project dependency
-To import dependecy to your project you can use maven or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and add mannualy to you project.
+To import dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and add mannualy to you project.
 
 ### Maven
 ```xml
@@ -44,6 +44,13 @@ To import dependecy to your project you can use maven or download jar [snap-sche
   <version>0.3.0</version>
 </dependency>
 ```
+
+### Gradle
+```xml
+implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
+```
+
+[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.3.0/jar).
 
 ## 2. Create database tables
 To create required tables in your database-schema, if you only use @SnapLock annotation (don´t schedule tasks) you need to create "snap_lock" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
@@ -83,6 +90,9 @@ To schedule task with this approach you only need:
 
 **Don´t forget that Snap Scheduler prevent multiple runs of same task when you have a microservice deployed in many nodes.**
 
+## 1. Import project dependency
+To import dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and add mannualy to you project.
+
 ### Maven
 ```xml
 <dependency>
@@ -91,6 +101,13 @@ To schedule task with this approach you only need:
   <version>0.3.0</version>
 </dependency>
 ```
+
+### Gradle
+```xml
+implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
+```
+
+[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.3.0/jar).
 
 ## 2. Create database tables
 To create required tables in your database-schema, if you only schedule tasks (don´t use @SnapLock annotation) you need to create "snap_scheduler" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
