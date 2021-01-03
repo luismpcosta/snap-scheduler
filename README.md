@@ -23,6 +23,7 @@ At moment the project was developed to support the transactional databases below
 4. [MariaDB](https://mariadb.org/)
 5. [H2](https://www.h2database.com/)
 
+---
 # Usage @SnapLock
 To use lock annotation and prevent multiple runs of task you need:
 1. Import project dependency
@@ -67,6 +68,8 @@ After configure Snap lock you can audit all running tasks annotated with @SnapLo
 View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
 
+---
+---
 # Usage Task Scheduler
 To schedule task with this approach you only need:
 1. Import project dependency
