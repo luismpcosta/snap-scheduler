@@ -40,7 +40,7 @@ To import dependecy to your project you can use maven or download jar [snap-sche
 ```
 
 ## 2. Create database tables
-To create required tables in your database-schema, if you only use @SnapLock annotation (don´t schedule tasks) you only need to create "snap_lock" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
+To create required tables in your database-schema, if you only use @SnapLock annotation (don´t schedule tasks) you need to create "snap_lock" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Annotate @Scheduled methods with @SnapLock
 To prevent task run more than once you only need to add "@SnapLock" annotation to your "@Scheduled" method. SnapLock annotation have two properties:
@@ -66,6 +66,36 @@ To schedule task with this approach you only need:
 3. Configure snap scheduler properties
 4. Schedule tasks
 
+### Maven
+```xml
+<dependency>
+  <groupId>io.opensw.scheduler</groupId>
+  <artifactId>snap-scheduler-core</artifactId>
+  <version>0.3.0</version>
+</dependency>
+```
+
+## 2. Create database tables
+To create required tables in your database-schema, if you only schedule tasks (don´t use @SnapLock annotation) you need to create "snap_scheduler" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
+
+## 3. Configure snap scheduler properties
+In application.yml you can configure snap scheduler properties.
+1. snap.scheduler.enabled property by default was true and enable polling taks from database, when false you can´t run scheduled tasks
+2. snap.scheduler.db-polling-interval property defines time between polling tasks from database
+
+```xml
+snap:
+  scheduler:
+    enabled: true
+    db-polling-interval: 1m
+```
+## 4. Schedule tasks
+
+
+## Task Scheduler Usage Conclusion
+All tasks schduled and configured with this approach are adited and you can analise all running dates and status, for this you only need to query table snap_task_audit.
+
+View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
 # Task Audit Table Definition
 All task runs are saved in snap_task_audit table even if an error occurs.
@@ -80,3 +110,7 @@ All task runs are saved in snap_task_audit table even if an error occurs.
 |end_run          |instant that task end running                                                    |
 |run_time_seconds |task total execution time in seconds                                             |
 |task_error       |when task throws an error this error was saved here                              |
+
+# License
+This project was completely free and open source, under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt), all feedbakc and pull-requests are welcome!
+
