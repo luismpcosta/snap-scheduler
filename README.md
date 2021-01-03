@@ -7,7 +7,7 @@ When you run a tasks with spring boot scheduler annotation "@Scheduled", or simi
 [View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-snaplock)
 
 ## Schedule tasks
-In a spring boot application create and run tasks dynamically wasn´t a easy mission, to simplify this mission we create a task scheduler. With this scheduler in a kick steps you can schedule and save tasks on database, the scheduled tasks run automatically on defined time.
+In a spring boot application create and run tasks dynamically wasn´t a easy mission, to simplify this mission we create a task scheduler. With this scheduler in a kick steps you can schedule and save tasks on database, the scheduled tasks run automatically on defined time. All tasks scheduled and runned with Snap Scheduler have prevention to multiple runs, like @SnapLock.
 
 [View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-task-scheduler)
 
@@ -44,15 +44,21 @@ To create required tables in your database-schema, if you only use @SnapLock ann
 
 ## 3. Annotate @Scheduled methods with @SnapLock
 To prevent task run more than once you only need to add "@SnapLock" annotation to your "@Scheduled" method. SnapLock annotation have two properties:
-1. key => is the task identifier, this key needs to be equal between all nodes to guarantee unique run
-2. time => is the time in seconds that tasks maintainance locked (example if you lock a task for 60 seconds when start run task was locked from this instant to this instant plus 60 seconds).
+1. **key** is the task identifier, this key needs to be equal between all nodes to guarantee unique run
+2. **time** is the time in seconds that tasks maintainance locked (example if you lock a task for 60 seconds when start run task was locked from this instant to this instant plus 60 seconds).
+
 ```java
+import io.opensw.scheduler.core.annotations.SnapLock;
+...
+
   @SnapLock(key = "REPORT_CURRENT_TIME", time = 60)
   @Scheduled(fixedRate = 30000)
   public void reportCurrentTime() {
     ...
   }
+  
 ```
+
 ## @SnapLock Conclusion
 After configure Snap lock you can audit all running tasks annotated with @SnapLock, for this you only need to query table snap_task_audit.
 
@@ -65,6 +71,8 @@ To schedule task with this approach you only need:
 2. Create database tables
 3. Configure snap scheduler properties
 4. Schedule tasks
+
+**Don´t forget that Snap Scheduler prevent multiple runs of same task when you have a microservice deployed in many nodes.**
 
 ### Maven
 ```xml
@@ -80,8 +88,8 @@ To create required tables in your database-schema, if you only schedule tasks (d
 
 ## 3. Configure snap scheduler properties
 In application.yml you can configure snap scheduler properties.
-1. snap.scheduler.enabled property by default was true and enable polling taks from database, when false you can´t run scheduled tasks
-2. snap.scheduler.db-polling-interval property defines time between polling tasks from database
+1. **snap.scheduler.enabled** property by default was true and enable polling taks from database, when false you can´t run scheduled tasks
+2. **snap.scheduler.db-polling-interval** property defines time between polling tasks from database
 
 ```xml
 snap:
@@ -90,12 +98,82 @@ snap:
     db-polling-interval: 1m
 ```
 ## 4. Schedule tasks
+To schedule tasks with Sanp Scheduler you have 2 options:
+1. Schedule tasks without data
+2. Schedule tasks with data
+
+### 1. Schedule tasks without data
+To schedule tasks without, your task needs to implement **TaskExecutor**. And you can add/inject spring beans into you implementation of TaskExecutor.
+
+```java
+import org.springframework.stereotype.Component;
+
+import io.opensw.scheduler.core.scheduler.task.TaskExecutor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class VoidTask implements TaskExecutor {
+
+  private final SomeService someService;
+  
+	@Override
+	public void execute() {
+		log.debug( "Task run without data" );
+    someService.doSomething();
+	}
+
+}
+```
+
+After **TaskExecutor** implementation was done you need to schedule the task to Snap Scheduler Runner identify and run them.
+
+#### Configure VoidTask as OneTimeTask
+OneTimeTask only run one time.
+
+##### First create task (OneTimeTask).
+**key** was the task identifier and needs to be unique
+**name** was the task name
+**runAt** was the Instant that task starts to run
+
+```java
+import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
+
+...
+
+final String key = UUID.randomUUID().toString();
+OneTimeTask oneTimeTask = OneTimeTask.create( VoidTask.class ).key( key ).name( "Task name" )
+				.runAt( Instant.now().plusSeconds( 60 ) );
+```
+
+##### Finally schedule the task
+Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
+
+
+```java
+import io.opensw.scheduler.core.scheduler.SnapScheduler;
+
+...
+
+private final SnapScheduler snapScheduler;
+
+...
+
+snapScheduler.schedule( oneTimeTask );
+
+```
+
+See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
+
 
 
 ## Task Scheduler Usage Conclusion
 All tasks schduled and configured with this approach are adited and you can analise all running dates and status, for this you only need to query table snap_task_audit.
 
 View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
+
 
 # Task Audit Table Definition
 All task runs are saved in snap_task_audit table even if an error occurs.
@@ -111,6 +189,7 @@ All task runs are saved in snap_task_audit table even if an error occurs.
 |run_time_seconds |task total execution time in seconds                                             |
 |task_error       |when task throws an error this error was saved here                              |
 
+
 # License
-This project was completely free and open source, under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt), all feedbakc and pull-requests are welcome!
+This project was completely free and open source, under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt), all feedback and pull-requests are welcome!
 
