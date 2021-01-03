@@ -119,12 +119,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class VoidTask implements TaskExecutor {
 
-  private final SomeService someService;
+	private final SomeService someService;
   
 	@Override
 	public void execute() {
 		log.debug( "Task run without data" );
-    someService.doSomething();
+		someService.doSomething();
 	}
 
 }
