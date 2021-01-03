@@ -1,4 +1,6 @@
 # snap-scheduler
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 Snap Scheduler it is a project with the main objective to make simple scheduling tasks in spring boot applications and guarantee that task run only once even when you have multiple instances of a microservice. This is a common needs in a spring boot microservices application (run in one or many nodes) and needs to run tasks in background with a specific time or recurrence (run many times).
 
 ## Run task once
@@ -103,7 +105,7 @@ To schedule tasks with Sanp Scheduler you have 2 options:
 2. Schedule tasks with data
 
 ### 1. Schedule tasks without data
-To schedule tasks without, your task needs to implement **TaskExecutor**. And you can add/inject spring beans into you implementation of TaskExecutor.
+To schedule tasks without data, your task needs to ***implement*** **TaskExecutor** and you can add/inject spring beans into you implementation of TaskExecutor.
 
 ```java
 import org.springframework.stereotype.Component;
@@ -167,6 +169,129 @@ snapScheduler.schedule( oneTimeTask );
 
 See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
 
+
+#### Configure VoidTask as RecurringTask
+RecurringTask runs many times with recurrence defined.
+
+##### First create task (RecurringTask).
+**key** was the task identifier and needs to be unique
+**name** was the task name
+**runAt** was the Instant that task starts to run
+**recurrence** was the recurrence duration
+
+```java
+import io.opensw.scheduler.core.scheduler.task.RecurringTask;
+
+...
+
+final String key = UUID.randomUUID().toString();
+RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key )
+				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
+```
+
+##### Finally schedule the task
+Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
+
+
+```java
+import io.opensw.scheduler.core.scheduler.SnapScheduler;
+
+...
+
+private final SnapScheduler snapScheduler;
+
+...
+
+snapScheduler.schedule( recurringTask );
+
+```
+
+See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
+
+### 2. Schedule tasks with data
+To schedule tasks with data, your task needs to ***extends*** **TaskDataExecutor** and your data needs to ***extends*** **TaskData**. In TaskDataExecutor implementation you can add/inject spring beans, this beans are injected automatically.
+
+**Create Data Object**
+```java
+import java.io.Serializable;
+
+import io.opensw.scheduler.core.scheduler.task.TaskData;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@EqualsAndHashCode( callSuper = false )
+@NoArgsConstructor
+public class Email extends TaskData implements Serializable {
+
+	private static final long serialVersionUID = -2483934526341948446L;
+
+	private String email;
+
+}
+```
+
+**Create TaskDataExecutor Implementation**
+```java
+import org.springframework.stereotype.Component;
+
+import io.opensw.scheduler.core.scheduler.task.TaskDataExecutor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Component
+@RequiredArgsConstructor
+public class EmailTask extends TaskDataExecutor< Email > {
+
+	private final TestService testService;
+
+	@Override
+	public void execute( Email data ) {
+		testService.test();
+	}
+
+}
+```
+
+After **TaskDataExecutor** implementation was done you need to schedule the task to Snap Scheduler Runner identify and run them.
+
+#### Configure VoidTask as OneTimeTask
+OneTimeTask only run one time.
+
+##### First create task (OneTimeTask).
+**key** was the task identifier and needs to be unique
+**name** was the task name
+**runAt** was the Instant that task starts to run
+
+```java
+import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
+
+...
+
+final String key = UUID.randomUUID().toString();
+OneTimeTask oneTimeTask = OneTimeTask.create( VoidTask.class ).key( key ).name( "Task name" )
+				.runAt( Instant.now().plusSeconds( 60 ) );
+```
+
+##### Finally schedule the task
+Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
+
+
+```java
+import io.opensw.scheduler.core.scheduler.SnapScheduler;
+
+...
+
+private final SnapScheduler snapScheduler;
+
+...
+
+snapScheduler.schedule( oneTimeTask );
+
+```
+
+See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
 
 
 ## Task Scheduler Usage Conclusion
