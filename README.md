@@ -15,11 +15,11 @@ In a spring boot application create and run tasks dynamically wasn´t a easy mis
 Boot features of this project (lock and scheduler tasks) create audit data, to analise if task was locked or run in estipulated time, etc.
 
 At moment the project was developed to support the transactional databases below:
-1. [PostgreSQL](https://www.postgresql.org/){:target="_blank"}
-2. [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server){:target="_blank"}
-3. [MySQL](https://www.mysql.com/){:target="_blank"}
-4. [MariaDB](https://mariadb.org/){:target="_blank"}
-5. [H2](https://www.h2database.com/){:target="_blank"}
+1. [PostgreSQL{:target="_blank"}](https://www.postgresql.org/)
+2. [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server)
+3. [MySQL](https://www.mysql.com/)
+4. [MariaDB](https://mariadb.org/)
+5. [H2](https://www.h2database.com/)
 
 # Usage @SnapLock
 To use lock annotation and prevent multiple runs of task you need:
