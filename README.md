@@ -4,8 +4,12 @@ Snap Scheduler it is a project with the main objective to make simple scheduling
 ## Run task once
 When you run a tasks with spring boot scheduler annotation "@Scheduled", or similar annotation, and have more than one node of microservice the task start running in all nodes at same time. To guarantee that taks run only once we create an annotation "@SnapLock" that you can configure in method definition and this annotation valite if task is already running on one node, if was running the execution was skipped.
 
+[View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-snaplock)
+
 ## Schedule tasks
-In a spring boot application create and run tasks dynamically wasn´t a easy mission, to simplify this mission we create a task scheduler. With this scheduler in a kick steps you can schedule and save tasks on database, the scheduled tasks run automatically on defined time. 
+In a spring boot application create and run tasks dynamically wasn´t a easy mission, to simplify this mission we create a task scheduler. With this scheduler in a kick steps you can schedule and save tasks on database, the scheduled tasks run automatically on defined time.
+
+[View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-task-scheduler)
 
 ## General
 Boot features of this project (lock and scheduler tasks) create audit data, to analise if task was locked or run in estipulated time, etc.
@@ -49,3 +53,7 @@ To prevent task run more than once you only need to add "@SnapLock" annotation t
     ...
   }
 ```
+
+# Usage Task Scheduler
+
+
