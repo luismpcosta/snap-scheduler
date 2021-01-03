@@ -15,7 +15,6 @@ In a spring boot application create and run tasks dynamically wasn´t a easy mis
 Boot features of this project (lock and scheduler tasks) create audit data, to analise if task was locked or run in estipulated time, etc.
 
 At moment the project was developed to support the transactional databases below:
-<a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>
 1. [PostgreSQL](https://www.postgresql.org/)
 2. [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server)
 3. [MySQL](https://www.mysql.com/)
