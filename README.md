@@ -56,7 +56,7 @@ To prevent task run more than once you only need to add "@SnapLock" annotation t
 ## @SnapLock Conclusion
 After configure Snap lock you can audit all running tasks annotated with @SnapLock, for this you only need to query table snap_task_audit.
 
-View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/edit/main/README.md#task-audit-table-definition) table definition.
+View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
 
 # Usage Task Scheduler
