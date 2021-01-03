@@ -24,6 +24,9 @@ At moment the project was developed to support the transactional databases below
 5. [H2](https://www.h2database.com/)
 
 ---
+
+---
+
 # Usage @SnapLock
 To use lock annotation and prevent multiple runs of task you need:
 1. Import project dependency
@@ -67,9 +70,10 @@ After configure Snap lock you can audit all running tasks annotated with @SnapLo
 
 View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
+---
 
 ---
----
+
 # Usage Task Scheduler
 To schedule task with this approach you only need:
 1. Import project dependency
@@ -106,6 +110,8 @@ snap:
 To schedule tasks with Sanp Scheduler you have 2 options:
 1. Schedule tasks without data
 2. Schedule tasks with data
+
+---
 
 ### 1. Schedule tasks without data
 To schedule tasks without data, your task needs to ***implement*** **TaskExecutor** and you can add/inject spring beans into you implementation of TaskExecutor.
@@ -210,6 +216,8 @@ snapScheduler.schedule( recurringTask );
 ```
 
 See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
+
+---
 
 ### 2. Schedule tasks with data
 To schedule tasks with data, your task needs to ***extends*** **TaskDataExecutor** and your data needs to ***extends*** **TaskData**. In TaskDataExecutor implementation you can add/inject spring beans, this beans are injected automatically.
@@ -342,12 +350,18 @@ snapScheduler.schedule( recurringTask );
 
 See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
 
+---
+
+---
 
 ## Task Scheduler Usage Conclusion
 All tasks schduled and configured with this approach are adited and you can analise all running dates and status, for this you only need to query table snap_task_audit.
 
 View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
+---
+
+---
 
 # Task Audit Table Definition
 All task runs are saved in snap_task_audit table even if an error occurs.
@@ -363,6 +377,9 @@ All task runs are saved in snap_task_audit table even if an error occurs.
 |run_time_seconds |task total execution time in seconds                                             |
 |task_error       |when task throws an error this error was saved here                              |
 
+---
+
+---
 
 # License
 This project was completely free and open source, under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt), all feedback and pull-requests are welcome!
