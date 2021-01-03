@@ -71,6 +71,7 @@ To schedule task with this approach you only need:
 All task runs are saved in snap_task_audit table even if an error occurs.
 
 |Column           |Description                                                                      |
+| --------------- | -------------------------------------------------------------------------------:|
 |id               |it's an auto icrement key                                                        |
 |key              |was the task identifier (in example before the key was "REPORT_CURRENT_TIME")    |
 |method           |class and method when @snapLock was called                                       |
