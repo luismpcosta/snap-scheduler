@@ -136,9 +136,9 @@ After **TaskExecutor** implementation was done you need to schedule the task to 
 OneTimeTask only run one time.
 
 ##### 1.1.1 First create task (OneTimeTask).
-**key** was the task identifier and needs to be unique
-**name** was the task name
-**runAt** was the Instant that task starts to run
+* **key** was the task identifier and needs to be unique
+* **name** was the task name
+* **runAt** was the Instant that task starts to run
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
@@ -174,10 +174,10 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 RecurringTask runs many times with recurrence defined.
 
 ##### 1.2.1 First create task (RecurringTask).
-**key** was the task identifier and needs to be unique
-**name** was the task name
-**runAt** was the Instant that task starts to run
-**recurrence** was the recurrence duration
++ **key** was the task identifier and needs to be unique
+* **name** was the task name
+* **runAt** was the Instant that task starts to run
+* **recurrence** was the recurrence duration
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.RecurringTask;
@@ -260,10 +260,10 @@ After **TaskDataExecutor** implementation was done you need to schedule the task
 OneTimeTask only run one time.
 
 ##### 2.1.1 First create task (OneTimeTask).
-**key** was the task identifier and needs to be unique
-**name** was the task name
-**runAt** was the Instant that task starts to run
-**data** was data to run task
+* **key** was the task identifier and needs to be unique
+* **name** was the task name
+* **runAt** was the Instant that task starts to run
+* **data** was data to run task
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
@@ -301,11 +301,11 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 RecurringTask runs many times with recurrence defined.
 
 ##### 2.2.1 First create task (RecurringTask).
-**key** was the task identifier and needs to be unique
-**name** was the task name
-**runAt** was the Instant that task starts to run
-**recurrence** was the recurrence duration
-**data** was data to run task
+* **key** was the task identifier and needs to be unique
+* **name** was the task name
+* **runAt** was the Instant that task starts to run
+* **recurrence** was the recurrence duration
+* **data** was data to run task
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.RecurringTask;
