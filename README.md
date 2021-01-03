@@ -125,8 +125,8 @@ snap:
 ```
 ## 4. Schedule tasks
 To schedule tasks with Sanp Scheduler you have 2 options:
-1. Schedule tasks without data
-2. Schedule tasks with data
+1. Schedule tasks **without data**
+2. Schedule tasks **with data**
 
 ---
 
