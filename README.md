@@ -353,7 +353,7 @@ All task runs are saved in snap_task_audit table even if an error occurs.
 | --------------- | :-------------------------------------------------------------------------------|
 |id               |it's an auto icrement key                                                        |
 |key              |was the task identifier (in example before the key was "REPORT_CURRENT_TIME")    |
-|method           |class and method when @snapLock was called                                       |
+|method           |class and method when @SnapLock was called                                       |
 |run_on           |server name when task was runned                                                 |
 |start_run        |instant that task started                                                        |
 |end_run          |instant that task end running                                                    |
