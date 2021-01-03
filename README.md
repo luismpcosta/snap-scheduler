@@ -132,10 +132,10 @@ public class VoidTask implements TaskExecutor {
 
 After **TaskExecutor** implementation was done you need to schedule the task to Snap Scheduler Runner identify and run them.
 
-#### Configure VoidTask as OneTimeTask
+#### 1.1 Configure VoidTask as OneTimeTask
 OneTimeTask only run one time.
 
-##### First create task (OneTimeTask).
+##### 1.1.1 First create task (OneTimeTask).
 **key** was the task identifier and needs to be unique
 **name** was the task name
 **runAt** was the Instant that task starts to run
@@ -150,7 +150,7 @@ OneTimeTask oneTimeTask = OneTimeTask.create( VoidTask.class ).key( key ).name( 
 				.runAt( Instant.now().plusSeconds( 60 ) );
 ```
 
-##### Finally schedule the task
+##### 1.1.2 Finally schedule the task
 Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
 
 
@@ -170,10 +170,10 @@ snapScheduler.schedule( oneTimeTask );
 See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
 
 
-#### Configure VoidTask as RecurringTask
+#### 1.2 Configure VoidTask as RecurringTask
 RecurringTask runs many times with recurrence defined.
 
-##### First create task (RecurringTask).
+##### 1.2.1 First create task (RecurringTask).
 **key** was the task identifier and needs to be unique
 **name** was the task name
 **runAt** was the Instant that task starts to run
@@ -189,7 +189,7 @@ RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key )
 				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
 ```
 
-##### Finally schedule the task
+##### 1.2.2 Finally schedule the task
 Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
 
 
@@ -256,25 +256,29 @@ public class EmailTask extends TaskDataExecutor< Email > {
 
 After **TaskDataExecutor** implementation was done you need to schedule the task to Snap Scheduler Runner identify and run them.
 
-#### Configure VoidTask as OneTimeTask
+#### 2.1 Configure EmailTask as OneTimeTask
 OneTimeTask only run one time.
 
-##### First create task (OneTimeTask).
+##### 2.1.1 First create task (OneTimeTask).
 **key** was the task identifier and needs to be unique
 **name** was the task name
 **runAt** was the Instant that task starts to run
+**data** was data to run task
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
 
 ...
 
+Email email = new Email();
+email.setEmail( "one.teste@gmail.com" );
+		
 final String key = UUID.randomUUID().toString();
 OneTimeTask oneTimeTask = OneTimeTask.create( VoidTask.class ).key( key ).name( "Task name" )
-				.runAt( Instant.now().plusSeconds( 60 ) );
+				.data(email).runAt( Instant.now().plusSeconds( 60 ) );
 ```
 
-##### Finally schedule the task
+##### 2.1.2 Finally schedule the task
 Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
 
 
@@ -288,6 +292,48 @@ private final SnapScheduler snapScheduler;
 ...
 
 snapScheduler.schedule( oneTimeTask );
+
+```
+
+See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-postgresql-example/src/main/java/io/opensw/scheduler/interfaces/SchedulerEndpoints.java).
+
+#### 2.2 Configure EmailTask as RecurringTask
+RecurringTask runs many times with recurrence defined.
+
+##### 2.2.1 First create task (RecurringTask).
+**key** was the task identifier and needs to be unique
+**name** was the task name
+**runAt** was the Instant that task starts to run
+**recurrence** was the recurrence duration
+**data** was data to run task
+
+```java
+import io.opensw.scheduler.core.scheduler.task.RecurringTask;
+
+...
+
+Email email = new Email();
+email.setEmail( "one.teste@gmail.com" );
+
+final String key = UUID.randomUUID().toString();
+RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key ).data(email)
+				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
+```
+
+##### 2.2.2 Finally schedule the task
+Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
+
+
+```java
+import io.opensw.scheduler.core.scheduler.SnapScheduler;
+
+...
+
+private final SnapScheduler snapScheduler;
+
+...
+
+snapScheduler.schedule( recurringTask );
 
 ```
 
