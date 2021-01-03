@@ -174,7 +174,7 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 RecurringTask runs many times with recurrence defined.
 
 ##### 1.2.1 First create task (RecurringTask).
-+ **key** was the task identifier and needs to be unique
+* **key** was the task identifier and needs to be unique
 * **name** was the task name
 * **runAt** was the Instant that task starts to run
 * **recurrence** was the recurrence duration
