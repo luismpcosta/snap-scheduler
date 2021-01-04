@@ -44,12 +44,9 @@
 	<properties>
 		<version.plugin.checkstyle>3.0.0</version.plugin.checkstyle>
 
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.login>61c08b3bec1e982fbe90f119013db76565d26cba</sonar.login>
 		<sonar.coverage.exclusions>**Properties.java, **Exception.java,
-			**Config.java</sonar.coverage.exclusions>
-		<sonar.junit.reportsPath>target/surefire-reports
-		</sonar.junit.reportsPath>
+			**Config.java, **Utils.java</sonar.coverage.exclusions>
+		<sonar.junit.reportsPath>target/surefire-reports</sonar.junit.reportsPath>
 	</properties>
 
 	<dependencies>
@@ -167,6 +164,33 @@
 	</build>
 
 	<profiles>
+		<!-- Sonar cloud profile configuration -->
+		<profile>
+			<id>sonar-cloud</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.projectKey>luismpcosta_snap-scheduler</sonar.projectKey>
+				<sonar.organization>opensw</sonar.organization>
+				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+				<sonar.login>ffa199c426fb8c9e01d7258a29d6f7751d29c833</sonar.login>
+			</properties>
+		</profile>
+
+		<!-- Sonar local profile configuration -->
+		<profile>
+			<id>sonar-local</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.host.url>http://localhost:9000</sonar.host.url>
+				<sonar.login>61c08b3bec1e982fbe90f119013db76565d26cba</sonar.login>
+			</properties>
+		</profile>
+
+		<!-- Checkstyle profile configuration -->
 		<profile>
 			<id>checkstyle</id>
 			<activation>

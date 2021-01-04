@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -78,4 +79,42 @@ class TaskTest {
 		assertEquals( RecurringTask.DEFAULT_NAME, task.getName() );
 		assertNotNull( task.getRecurrence() );
 	}
+	
+	@Test
+	void lockedTask() {
+		LockedTask task = LockedTask.create( VoidTask.class );
+		assertEquals( VoidTask.class, task.getClazz() );
+		assertEquals( "Locked task", task.getName() );
+
+		final Email email = new Email();
+		email.setEmail( "test@opensw.io" );
+		task.data( email );
+		assertEquals( email, task.getData() );
+		assertEquals( Email.class, task.getDataClazz() );
+		
+		final String key = UUID.randomUUID().toString();		
+		task.key( key );
+		assertEquals( key, task.getKey() );
+
+		final String name = "Task name";
+		task.name( name );
+		assertEquals( name, task.getName() );
+		
+		task.type( TaskType.LOCKED_TASK );
+		assertEquals( TaskType.LOCKED_TASK, task.getType() );
+		
+		final Instant now = Instant.now();
+		task.runAt( now );
+		assertEquals( now, task.getRunAt() );
+		
+		// null do not update data
+		task.data( null );
+		assertNotNull( task.getData() );
+
+		// null do not update data class 
+		task.dataClazz( null );
+		assertNotNull( task.getDataClazz() );
+		
+	}
+
 }
