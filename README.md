@@ -14,7 +14,7 @@ When you run a task in Spring Boot scheduler with annotation "@Scheduled" (or si
 ## Schedule tasks - Snap Scheduler
 In a Spring Boot application creating and running tasks dynamically is not a easy mission. To make it easier we created a simplified task scheduler. In this scheduler only with a few steps you can schedule and save tasks on a database. The scheduled tasks will run automatically on predefined time. Similarly to "@SnapLock" annotation all tasks scheduled and runned with Snap Scheduler have prevention to avoid multiple runs.
 
-[View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-task-scheduler)
+[View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-snap-scheduler)
 
 ## General
 Both functionalities of this project ("@SnapLock" and Snap Scheduler) create audit data. This allows to later understand if one given task was locked, started at the predefined time, execution time, error logs, etc.
