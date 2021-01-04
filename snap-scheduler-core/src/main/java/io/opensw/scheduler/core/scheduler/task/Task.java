@@ -31,7 +31,7 @@ public abstract class Task {
 	 * @param name of task
 	 * @param type of task
 	 */
-	public Task( final Class<?> clazz, final String name, final TaskType type ) {
+	protected Task( final Class<?> clazz, final String name, final TaskType type ) {
 		this.clazz = clazz;
 		this.name = name;
 		this.type = type;
@@ -47,7 +47,7 @@ public abstract class Task {
 	 * @param type of task
 	 * @param data to run task
 	 */
-	public Task( final Class<?> clazz, final String name, final String key, final TaskType type, final TaskData data ) {
+	protected Task( final Class<?> clazz, final String name, final String key, final TaskType type, final TaskData data ) {
 		this.clazz = clazz;
 		this.name = name;
 		this.key = key;
@@ -63,7 +63,7 @@ public abstract class Task {
 	 * @param key  identifier of task
 	 * @param type of task
 	 */
-	public Task( final Class<?> clazz, final String name, final String key, final TaskType type ) {
+	protected Task( final Class<?> clazz, final String name, final String key, final TaskType type ) {
 		this.clazz = clazz;
 		this.name = name;
 		this.key = key;

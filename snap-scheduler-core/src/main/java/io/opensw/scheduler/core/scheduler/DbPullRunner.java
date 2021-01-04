@@ -1,5 +1,7 @@
 package io.opensw.scheduler.core.scheduler;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,12 @@ public class DbPullRunner extends Thread {
 			try {
 				while ( running ) {
 					log.debug( "Handle tasks from database" );
-					
+
 					handler.handleDbTasks();
-					
+
 					log.debug( "End handling tasks from database" );
 
-					Thread.sleep( interval );
+					TimeUnit.MILLISECONDS.sleep( interval );
 				}
 			}
 			catch ( Exception e ) {

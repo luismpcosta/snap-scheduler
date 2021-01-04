@@ -74,7 +74,7 @@ public class LockedTask extends Task {
 		}
 		
 		this.setData( data );
-		this.setDataClazz( data.getClass() );
+		this.dataClazz( data.getClass() );
 
 		return this;
 	}
