@@ -1,6 +1,7 @@
 # snap-scheduler
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.3.0)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=coverage)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 
 Snap Scheduler it is a project with the main objective to make simple scheduling tasks in spring boot applications and guarantee that task run only once even when you have multiple instances of a microservice. This is a common needs in a spring boot microservices application (run in one or many nodes) and needs to run tasks in background with a specific time or recurrence (run many times).
 
