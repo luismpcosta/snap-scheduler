@@ -17,7 +17,7 @@ In a Spring Boot application creating and running tasks dynamically is not a eas
 [View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-task-scheduler)
 
 ## General
-Both functionalities of this project ("@SnapLock" and Snap Scheduler) create audit data. This allows to later understand if one given task: was locked, started at the predefined time, execution time, error logs, etc.
+Both functionalities of this project ("@SnapLock" and Snap Scheduler) create audit data. This allows to later understand if one given task was locked, started at the predefined time, execution time, error logs, etc.
 
 The project supports the following transactional databases:
 1. [PostgreSQL](https://www.postgresql.org/)
@@ -56,7 +56,8 @@ implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
 [See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.3.0/jar) dependency management.
 
 ## 2. Create required database tables
-The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
+The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap_task_audit" tables. 
+See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Annotate @Scheduled methods with @SnapLock
 To prevent tasks from running more than once you only need to add "@SnapLock" annotation to your "@Scheduled" method. SnapLock annotation has two properties:
@@ -113,7 +114,8 @@ implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
 [See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.3.0/jar) dependency management.
 
 ## 2. Create required database tables
-The Snap Scheduler mandatory tables that need to be created are "snap_scheduler" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
+The Snap Scheduler mandatory tables that need to be created are "snap_scheduler" and "snap_task_audit" tables. 
+See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Configure snap scheduler properties
 In application.yml file you can configure snap scheduler properties.
@@ -167,9 +169,9 @@ With **TaskExecutor** implementation concluded you can schedule your task in Sna
 OneTimeTask only runs one time.
 
 ##### 1.1.1 Create task (OneTimeTask).
-* **key** task identifier and needs to be unique.
-* **name** task name.
-* **runAt** Instant that task starts to run.
+* **key** - task identifier and needs to be unique.
+* **name** - task name.
+* **runAt** - time that task starts to run.
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
@@ -207,7 +209,7 @@ RecurringTask runs many times with prefedined recurrence duration.
 ##### 1.2.1 Create task (RecurringTask).
 * **key** - task identifier and needs to be unique.
 * **name** - task name.
-* **runAt** - Instant that task starts to run.
+* **runAt** - time that task starts to run.
 * **recurrence** - recurrence duration.
 
 ```java
@@ -297,7 +299,7 @@ OneTimeTask only run one time.
 ##### 2.1.1 Create task (OneTimeTask)
 * **key** - task identifier and needs to be unique.
 * **name** - task name.
-* **runAt** - Instant that task starts to run.
+* **runAt** - time that task starts to run.
 * **data** - data to run task.
 
 ```java
@@ -337,7 +339,7 @@ RecurringTask runs many times with recurrence defined.
 ##### 2.2.1 Create task (RecurringTask).
 * **key** - task identifier and needs to be unique.
 * **name** - task name.
-* **runAt** - Instant that task starts to run.
+* **runAt** - time that task starts to run.
 * **recurrence** - recurrence duration.
 * **data** - data to run task.
 
