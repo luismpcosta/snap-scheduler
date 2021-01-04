@@ -4,22 +4,22 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=coverage)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=security_rating)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 
-Snap Scheduler it is a project with the main objective to make simple scheduling tasks in spring boot applications and guarantee that task run only once even when you have multiple instances of a microservice. This is a common needs in a spring boot microservices application (run in one or many nodes) and needs to run tasks in background with a specific time or recurrence (run many times).
+Snap Scheduler project main objective is to simplify scheduling tasks in Spring Boot applications. Guarantees that one given task only runs once, even when you have multiple instances of a microservice. This is a common need in a Spring Boot applications where often we need to run tasks in background with a specific time or recurrence (run many times). To summarize this Project provides two main functionalities: 1. Run a task only once and 2. Simplified tasks' scheduler.
 
-## Run task once
-When you run a tasks with spring boot scheduler annotation "@Scheduled", or similar annotation, and have more than one node of microservice the task start running in all nodes at same time. To guarantee that taks run only once we create an annotation "@SnapLock" that you can configure in method definition and this annotation valite if task is already running on one node, if was running the execution was skipped.
+## Run task once - @SnapLock
+When you run a task in Spring Boot scheduler with annotation "@Scheduled" (or similar annotation), and have multiple nodes of a microservice that task will start running in all nodes at same time. To guarantee that task only runs once we created an annotation "@SnapLock" which you can configure in your method definition. "@SnapLock" annotation valites if one given task is already running in another node: if is already running the task will not start in another node (skips this task), otherwise will start the task.
 
 [View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-snaplock)
 
-## Schedule tasks
-In a spring boot application create and run tasks dynamically wasn´t a easy mission, to simplify this mission we create a task scheduler. With this scheduler in a kick steps you can schedule and save tasks on database, the scheduled tasks run automatically on defined time. All tasks scheduled and runned with Snap Scheduler have prevention to multiple runs, like @SnapLock.
+## Schedule tasks - Snap Scheduler
+In a Spring Boot application creating and running tasks dynamically is not a easy mission. To make it easier we created a simplified task scheduler. In this scheduler only with a few steps you can schedule and save tasks on a database. The scheduled tasks will run automatically on predefined time. Similarly to "@SnapLock" annotation all tasks scheduled and runned with Snap Scheduler have prevention to avoid multiple runs.
 
 [View Usage](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#usage-task-scheduler)
 
 ## General
-Boot features of this project (lock and scheduler tasks) create audit data, to analise if task was locked or run in estipulated time, etc.
+Both functionalities of this project ("@SnapLock" and Snap Scheduler) create audit data. This allows to later understand if one given task: was locked, started at the predefined time, execution time, error logs, etc.
 
-At moment the project was developed to support the transactional databases below:
+The project supports the following transactional databases:
 1. [PostgreSQL](https://www.postgresql.org/)
 2. [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server)
 3. [MySQL](https://www.mysql.com/)
@@ -31,13 +31,13 @@ At moment the project was developed to support the transactional databases below
 ---
 
 # Usage @SnapLock
-To use lock annotation and prevent multiple runs of task you need:
-1. Import project dependency
-2. Create database tables
+To use @SnapLock annotation and prevent multiple runs of task you need to:
+1. Import this project dependency
+2. Create required database tables
 3. Annotate @Scheduled methods with @SnapLock
 
 ## 1. Import project dependency
-To import dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and add mannualy to you project.
+To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and configure mannualy in your project.
 
 ### Maven
 ```xml
@@ -55,13 +55,13 @@ implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
 
 [See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.3.0/jar) dependency management.
 
-## 2. Create database tables
-To create required tables in your database-schema, if you only use @SnapLock annotation (don´t schedule tasks) you need to create "snap_lock" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
+## 2. Create required database tables
+The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Annotate @Scheduled methods with @SnapLock
-To prevent task run more than once you only need to add "@SnapLock" annotation to your "@Scheduled" method. SnapLock annotation have two properties:
-1. **key** is the task identifier, this key needs to be equal between all nodes to guarantee unique run
-2. **time** is the time in seconds that tasks maintainance locked (example if you lock a task for 60 seconds when start run task was locked from this instant to this instant plus 60 seconds).
+To prevent tasks from running more than once you only need to add "@SnapLock" annotation to your "@Scheduled" method. SnapLock annotation has two properties:
+1. **key** is the task identifier. This key needs to be equal between all nodes to guarantee an unique run.
+2. **time** is the time in seconds the tasks stays locked (to prevent from start running in another node). For example, if you start a task in a given node and set time lock for 60 seconds then this task cannot start again within that time.
 
 ```java
 import io.opensw.scheduler.core.annotations.SnapLock;
@@ -76,7 +76,7 @@ import io.opensw.scheduler.core.annotations.SnapLock;
 ```
 
 ## @SnapLock Conclusion
-After configure Snap lock you can audit all running tasks annotated with @SnapLock, for this you only need to query table snap_task_audit.
+You can audit all tasks that runned and had @SnapLock annotation. For this you only need to query table snap_task_audit.
 
 View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
@@ -84,17 +84,17 @@ View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/R
 
 ---
 
-# Usage Task Scheduler
-To schedule task with this approach you only need:
-1. Import project dependency
-2. Create database tables
+# Usage Snap Scheduler
+To schedule tasks with this functionality you only need to:
+1. Import this project dependency
+2. Create required database tables
 3. Configure snap scheduler properties
-4. Schedule tasks
+4. Schedule your tasks
 
-**Don´t forget that Snap Scheduler prevent multiple runs of same task when you have a microservice deployed in many nodes.**
+**Do not forget that Snap Scheduler prevents multiple runs of the same task when you have a microservice deployed in many nodes.**
 
 ## 1. Import project dependency
-To import dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and add mannualy to you project.
+To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.3.0/snap-scheduler-core-0.3.0-javadoc.jar) and configure mannualy in your project.
 
 ### Maven
 ```xml
@@ -112,13 +112,13 @@ implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
 
 [See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.3.0/jar) dependency management.
 
-## 2. Create database tables
-To create required tables in your database-schema, if you only schedule tasks (don´t use @SnapLock annotation) you need to create "snap_scheduler" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
+## 2. Create required database tables
+The Snap Scheduler mandatory tables that need to be created are "snap_scheduler" and "snap_task_audit" tables. See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Configure snap scheduler properties
-In application.yml you can configure snap scheduler properties.
-1. **snap.scheduler.enabled** property by default was true and enable polling taks from database, when false you can´t run scheduled tasks
-2. **snap.scheduler.db-polling-interval** property defines time between polling tasks from database
+In application.yml file you can configure snap scheduler properties.
+1. **snap.scheduler.enabled** property by default is set true and enables polling taks from database. If false you can not run scheduled tasks.
+2. **snap.scheduler.db-polling-interval** property defines time between polling tasks from database.
 
 ```xml
 snap:
@@ -126,15 +126,15 @@ snap:
     enabled: true
     db-polling-interval: 1m
 ```
-## 4. Schedule tasks
-To schedule tasks with Sanp Scheduler you have 2 options:
+## 4. Schedule your tasks
+To schedule your tasks with Snap Scheduler you have 2 options:
 1. Schedule tasks **without data**
 2. Schedule tasks **with data**
 
 ---
 
 ### 1. Schedule tasks without data
-To schedule tasks without data, your task needs to ***implement*** **TaskExecutor** and you can add/inject spring beans into you implementation of TaskExecutor.
+To schedule a task that needs no data to start running your task needs to ***implement*** **TaskExecutor**. Also, you can add/inject spring beans into your implementation of TaskExecutor.
 
 ```java
 import org.springframework.stereotype.Component;
@@ -159,15 +159,17 @@ public class VoidTask implements TaskExecutor {
 }
 ```
 
-After **TaskExecutor** implementation was done you need to schedule the task to Snap Scheduler Runner identify and run them.
+With **TaskExecutor** implementation concluded you can schedule your task in Snap Scheduler. Hence, later your task can be identified and start in a given node. 
 
-#### 1.1 Configure VoidTask as OneTimeTask
-OneTimeTask only run one time.
+**See steps bellow to how you can schedule your task in Snap Scheduler as OneTimeTask or RecurringTask.**
 
-##### 1.1.1 First create task (OneTimeTask).
-* **key** was the task identifier and needs to be unique
-* **name** was the task name
-* **runAt** was the Instant that task starts to run
+#### 1.1 Schedule VoidTask as OneTimeTask
+OneTimeTask only runs one time.
+
+##### 1.1.1 Create task (OneTimeTask).
+* **key** task identifier and needs to be unique.
+* **name** task name.
+* **runAt** Instant that task starts to run.
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
@@ -179,8 +181,8 @@ OneTimeTask oneTimeTask = OneTimeTask.create( VoidTask.class ).key( key ).name( 
 				.runAt( Instant.now().plusSeconds( 60 ) );
 ```
 
-##### 1.1.2 Finally schedule the task
-Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
+##### 1.1.2 Schedule your task
+Task configurations are stored in a database. Later, tasks start running following predefined configurations time "runAt", and audit log are stored in table "snap_task_audit".
 
 
 ```java
@@ -200,13 +202,13 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 
 
 #### 1.2 Configure VoidTask as RecurringTask
-RecurringTask runs many times with recurrence defined.
+RecurringTask runs many times with prefedined recurrence duration.
 
-##### 1.2.1 First create task (RecurringTask).
-* **key** was the task identifier and needs to be unique
-* **name** was the task name
-* **runAt** was the Instant that task starts to run
-* **recurrence** was the recurrence duration
+##### 1.2.1 Create task (RecurringTask).
+* **key** - task identifier and needs to be unique.
+* **name** - task name.
+* **runAt** - Instant that task starts to run.
+* **recurrence** - recurrence duration.
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.RecurringTask;
@@ -218,8 +220,8 @@ RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key )
 				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
 ```
 
-##### 1.2.2 Finally schedule the task
-Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
+##### 1.2.2 Schedule the task
+Task configurations are stored in a database. Later, tasks start running following predefined configurations time "runAt", and audit log are stored in table "snap_task_audit".
 
 
 ```java
@@ -240,7 +242,7 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 ---
 
 ### 2. Schedule tasks with data
-To schedule tasks with data, your task needs to ***extends*** **TaskDataExecutor** and your data needs to ***extends*** **TaskData**. In TaskDataExecutor implementation you can add/inject spring beans, this beans are injected automatically.
+To schedule tasks with data your task needs to ***extends*** **TaskDataExecutor** and your data needs to ***extends*** **TaskData**. Also, in TaskDataExecutor implementation you can add/inject spring beans, this beans are injected automatically.
 
 **Create Data Object**
 ```java
@@ -285,16 +287,18 @@ public class EmailTask extends TaskDataExecutor< Email > {
 }
 ```
 
-After **TaskDataExecutor** implementation was done you need to schedule the task to Snap Scheduler Runner identify and run them.
+With **TaskDataExecutor** implementation concluded you can schedule your task in Snap Scheduler. Hence, later your task can be identified and start in a given node. 
+
+**See steps bellow to how you can schedule your task in Snap Scheduler as OneTimeTask or RecurringTask.**
 
 #### 2.1 Configure EmailTask as OneTimeTask
 OneTimeTask only run one time.
 
-##### 2.1.1 First create task (OneTimeTask).
-* **key** was the task identifier and needs to be unique
-* **name** was the task name
-* **runAt** was the Instant that task starts to run
-* **data** was data to run task
+##### 2.1.1 Create task (OneTimeTask)
+* **key** - task identifier and needs to be unique.
+* **name** - task name.
+* **runAt** - Instant that task starts to run.
+* **data** - data to run task.
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
@@ -309,9 +313,8 @@ OneTimeTask oneTimeTask = OneTimeTask.create( VoidTask.class ).key( key ).name( 
 				.data(email).runAt( Instant.now().plusSeconds( 60 ) );
 ```
 
-##### 2.1.2 Finally schedule the task
-Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
-
+##### 2.1.2 Schedule the task
+Task configurations are stored in a database. Later, tasks start running following predefined configurations time "runAt", and audit log are stored in table "snap_task_audit".
 
 ```java
 import io.opensw.scheduler.core.scheduler.SnapScheduler;
@@ -331,12 +334,12 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 #### 2.2 Configure EmailTask as RecurringTask
 RecurringTask runs many times with recurrence defined.
 
-##### 2.2.1 First create task (RecurringTask).
-* **key** was the task identifier and needs to be unique
-* **name** was the task name
-* **runAt** was the Instant that task starts to run
-* **recurrence** was the recurrence duration
-* **data** was data to run task
+##### 2.2.1 Create task (RecurringTask).
+* **key** - task identifier and needs to be unique.
+* **name** - task name.
+* **runAt** - Instant that task starts to run.
+* **recurrence** - recurrence duration.
+* **data** - data to run task.
 
 ```java
 import io.opensw.scheduler.core.scheduler.task.RecurringTask;
@@ -351,9 +354,8 @@ RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key ).
 				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
 ```
 
-##### 2.2.2 Finally schedule the task
-Task schedule save task in database and run this on specified time "runAt", with audit log creation in table "snap_task_audit".
-
+##### 2.2.2 Schedule the task
+Task configurations are stored in a database. Later, tasks start running following predefined configurations time "runAt", and audit log are stored in table "snap_task_audit".
 
 ```java
 import io.opensw.scheduler.core.scheduler.SnapScheduler;
@@ -375,7 +377,7 @@ See complete [example](https://github.com/luismpcosta/snap-scheduler/blob/main/s
 ---
 
 ## Task Scheduler Usage Conclusion
-All tasks schduled and configured with this approach are adited and you can analise all running dates and status, for this you only need to query table snap_task_audit.
+All tasks scheduled and configured with this project are audited and you can analise all running dates and status, for this you only need to query table snap_task_audit.
 
 View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/README.md#task-audit-table-definition) table definition.
 
@@ -384,18 +386,18 @@ View [snap_task_audit](https://github.com/luismpcosta/snap-scheduler/blob/main/R
 ---
 
 # Task Audit Table Definition
-All task runs are saved in snap_task_audit table even if an error occurs.
+All tasks that runned in a given node are saved in snap_task_audit table including tasks that triggered an error.
 
-|Column           |Description                                                                      |
-| --------------- | :-------------------------------------------------------------------------------|
-|id               |it's an auto icrement key                                                        |
-|key              |was the task identifier (in example before the key was "REPORT_CURRENT_TIME")    |
-|method           |class and method when @SnapLock was called                                       |
-|run_on           |server name when task was runned                                                 |
-|start_run        |instant that task started                                                        |
-|end_run          |instant that task end running                                                    |
-|run_time_seconds |task total execution time in seconds                                             |
-|task_error       |when task throws an error this error was saved here                              |
+|Column           |Description                                                                  |
+| --------------- | :---------------------------------------------------------------------------|
+|id               |is an auto increment key	                                                |
+|key              |task identifier (in example before the key was "REPORT_CURRENT_TIME")	|
+|method           |class and method when @SnapLock is called                                    |
+|run_on           |server name where the task runned                                            |
+|start_run        |time when the task started                                                   |
+|end_run          |time when the task ends                                                    	|
+|run_time_seconds |task total execution time (in seconds)                                       |
+|task_error       |when task throws an error. Error description is stored here                  |
 
 ---
 
