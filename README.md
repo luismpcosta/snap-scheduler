@@ -57,6 +57,7 @@ implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
 
 ## 2. Create required database tables
 The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap_task_audit" tables. 
+
 See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Annotate @Scheduled methods with @SnapLock
@@ -115,6 +116,7 @@ implementation 'io.opensw.scheduler:snap-scheduler-core:0.3.0'
 
 ## 2. Create required database tables
 The Snap Scheduler mandatory tables that need to be created are "snap_scheduler" and "snap_task_audit" tables. 
+
 See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
 ## 3. Configure snap scheduler properties
