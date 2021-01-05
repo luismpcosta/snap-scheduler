@@ -403,6 +403,10 @@ snap:
       password: ${PG_PASSWORD:root}
 ```
 
+---
+
+---
+
 # Task Audit Table Definition
 All tasks that runned in a given node are saved in snap_task_audit table including tasks that triggered an error.
 
