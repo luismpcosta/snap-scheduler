@@ -429,6 +429,12 @@ All tasks that runned in a given node are saved in snap_task_audit table includi
 This project was completely free and open source, under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt), all feedback and pull-requests are welcome!
 
 # Releases
+The release notes
 
 ## 0.4.0
 * Custom database configuration
+
+## 0.3.0
+* First release with implementation of @SnapLock and Snap Scheduler
+
+
