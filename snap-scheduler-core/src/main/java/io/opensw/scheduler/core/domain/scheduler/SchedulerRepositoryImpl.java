@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,7 +82,8 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 
 	protected static final String H2_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = 0 WHERE picked = 1 AND end_run is null AND picked_by = ?;";
 
-	public SchedulerRepositoryImpl( final DataSource dataSource, final ObjectMapper mapper ) {
+	@Autowired
+	public SchedulerRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource, final ObjectMapper mapper ) {
 		this.dataSource = dataSource;
 		this.mapper = mapper;
 		this.dbPlatform = DbUtils.databaseType( dataSource );

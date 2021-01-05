@@ -8,6 +8,8 @@ import java.time.Instant;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +37,8 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 
 	protected static final String H2_INSERT_QUERY = "INSERT INTO snap_task_audit(key, method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-	public TaskAuditRepositoryImpl( final DataSource dataSource, final ObjectMapper mapper ) {
+	@Autowired
+	public TaskAuditRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource, final ObjectMapper mapper ) {
 		this.dataSource = dataSource;
 		this.mapper = mapper;
 		this.dbPlatform = DbUtils.databaseType( dataSource );

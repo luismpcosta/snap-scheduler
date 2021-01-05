@@ -22,6 +22,9 @@ public class SnapSchedulerProperties {
 	/** database polling tasks interval */
 	@DurationUnit( ChronoUnit.MINUTES )
 	private Duration dbPollingInterval;
+	
+	/** database configuration */
+	private DatabaseConfig datasource;
 
 	/**
 	 * Database polling tasks interval
@@ -33,6 +36,19 @@ public class SnapSchedulerProperties {
 			return 300000;
 		}
 		return dbPollingInterval.toMillis();
+	}
+	
+	@Data
+	public static class DatabaseConfig {
+
+		private String driverClassName;
+
+		private String url;
+
+		private String username;
+
+		private String password;
+
 	}
 	
 }
