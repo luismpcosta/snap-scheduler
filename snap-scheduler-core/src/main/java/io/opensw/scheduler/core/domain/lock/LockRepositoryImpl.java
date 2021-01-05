@@ -9,6 +9,8 @@ import java.time.temporal.ChronoUnit;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.opensw.scheduler.core.exceptions.DatabaseException;
@@ -41,7 +43,8 @@ public class LockRepositoryImpl implements LockRepository {
 
 	protected static final String H2_LOCK_INSERT_QUERY = "INSERT INTO snap_lock (key, method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
 
-	public LockRepositoryImpl( final DataSource dataSource ) {
+	@Autowired
+	public LockRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource ) {
 		this.dataSource = dataSource;
 		this.dbPlatform = DbUtils.databaseType( dataSource );
 	}
