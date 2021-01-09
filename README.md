@@ -221,7 +221,8 @@ import io.opensw.scheduler.core.scheduler.task.RecurringTask;
 
 final String key = UUID.randomUUID().toString();
 RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key )
-				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
+				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" )
+				.runAt( Instant.now() );
 ```
 
 ##### 1.2.2 Schedule the task
@@ -355,7 +356,8 @@ email.setEmail( "one.teste@gmail.com" );
 
 final String key = UUID.randomUUID().toString();
 RecurringTask recurringTask = RecurringTask.create( VoidTask.class ).key( key ).data(email)
-				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" ).runAt( Instant.now() );
+				.recurrence( Duration.ofSeconds( 60 ) ).name( "Task name" )
+				.runAt( Instant.now() );
 ```
 
 ##### 2.2.2 Schedule the task
