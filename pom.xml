@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.opensw.scheduler</groupId>
 	<artifactId>snap-scheduler</artifactId>
-	<version>0.5.0-SNAPSHOT</version>
+	<version>0.6.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -14,7 +14,7 @@
 		<maven.compiler.target>${jdk.version}</maven.compiler.target>
 
 		<!-- Dependency versions -->
-		<spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+		<spring-boot.version>2.2.2.RELEASE</spring-boot.version>
 	</properties>
 
 	<dependencyManagement>
@@ -31,9 +31,9 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>snap-scheduler-core</module>
 		<module>snap-scheduler-postgresql-example</module>
 		<module>snap-scheduler-mssqlserver-example</module>
 		<module>snap-scheduler-mysql-example</module>
 	</modules>
+
 </project>
