@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ServiceEventListener {
+public class SnapEventListener {
 
 	private final TaskAuditRepository taskAuditRepository;
 

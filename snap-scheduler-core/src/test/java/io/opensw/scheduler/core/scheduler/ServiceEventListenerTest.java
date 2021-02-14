@@ -24,7 +24,7 @@ import io.opensw.scheduler.SnapSchedulerProperties;
 import io.opensw.scheduler.core.common.VoidTask;
 import io.opensw.scheduler.core.domain.audit.TaskAuditRepository;
 import io.opensw.scheduler.core.domain.scheduler.SchedulerRepository;
-import io.opensw.scheduler.core.events.ServiceEventListener;
+import io.opensw.scheduler.core.events.SnapEventListener;
 import io.opensw.scheduler.core.events.obj.TaskRunEvent;
 import io.opensw.scheduler.core.exceptions.DatabaseException;
 import io.opensw.scheduler.core.scheduler.task.OneTimeTask;
@@ -49,7 +49,7 @@ class ServiceEventListenerTest {
 
 	private SnapSchedulerProperties properties;
 
-	private ServiceEventListener serviceEventListener;
+	private SnapEventListener serviceEventListener;
 
 	protected DataSource dataSource() {
 		JdbcDataSource dataSource = new JdbcDataSource();
@@ -72,7 +72,7 @@ class ServiceEventListenerTest {
 				schedulerRepository, properties, context, applicationEventPublisher
 		);
 
-		serviceEventListener = new ServiceEventListener(
+		serviceEventListener = new SnapEventListener(
 				taskAuditRepository, schedulerRepository, snapTaskHandler, properties
 		);
 	}
