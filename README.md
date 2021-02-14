@@ -469,6 +469,9 @@ This project was completely free and open source, under [Apache 2.0 License](htt
 # Releases
 The release notes
 
+## 0.6.0
+* Change event listener and upgrade versions of example projects 
+
 ## 0.5.0
 * Change project build 
 
