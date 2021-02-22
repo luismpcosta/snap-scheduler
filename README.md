@@ -72,7 +72,9 @@ import io.opensw.scheduler.core.config.SnapSchedulerConfig;
 @Configuration
 @Import( SnapAppConfig.class )
 public class SchedulerConfig {
-
+	
+	private static final String SNAP_DB_POOL_NAME = "snap-pool";
+	
 	@Bean( name = "snapDataSource" )
 	public DataSource customDataSource( final DataSourceProperties properties,
 			@Value( "${spring.datasource.hikari.schema}" ) final String schema ) {
@@ -164,7 +166,9 @@ import io.opensw.scheduler.core.config.SnapSchedulerConfig;
 @Configuration
 @Import( SnapAppConfig.class )
 public class SchedulerConfig {
-
+	
+	private static final String SNAP_DB_POOL_NAME = "snap-pool";
+	
 	@Bean( name = "snapDataSource" )
 	public DataSource customDataSource( final DataSourceProperties properties,
 			@Value( "${spring.datasource.hikari.schema}" ) final String schema ) {
