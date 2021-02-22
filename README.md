@@ -60,8 +60,8 @@ The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap
 
 See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
-## 3. Import SnapSchedulerConfig
-To setup SnapScheduler you need to import predefined confiuration (SnapSchedulerConfig) or create similar configuration in project.
+## 3. Import SnapAppConfig
+To setup SnapScheduler you need to import predefined confiuration (SnapAppConfig) and add DataSource creation/configuration.
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -70,9 +70,24 @@ import org.springframework.context.annotation.Import;
 import io.opensw.scheduler.core.config.SnapSchedulerConfig;
 
 @Configuration
-@Import( SnapSchedulerConfig.class )
+@Import( SnapAppConfig.class )
 public class SchedulerConfig {
 
+	@Bean( name = "snapDataSource" )
+	public DataSource customDataSource( final DataSourceProperties properties,
+			@Value( "${spring.datasource.hikari.schema}" ) final String schema ) {
+
+		final HikariDataSource dataSource = properties.initializeDataSourceBuilder()
+				.type( HikariDataSource.class ).build();
+
+		dataSource.setPoolName( SNAP_DB_POOL_NAME );
+		
+		if ( !StringUtils.isEmpty( schema ) ) {
+			dataSource.setSchema( schema );
+		}
+
+		return dataSource;
+	}
 	
 }
 ```
@@ -137,8 +152,8 @@ The Snap Scheduler mandatory tables that need to be created are "snap_scheduler"
 
 See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
-## 3. Import SnapSchedulerConfig
-To setup SnapScheduler you need to import predefined confiuration (SnapSchedulerConfig) or create similar configuration in project.
+## 3. Import SnapAppConfig
+To setup SnapScheduler you need to import predefined confiuration (SnapAppConfig) and add DataSource creation/configuration.
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -147,9 +162,24 @@ import org.springframework.context.annotation.Import;
 import io.opensw.scheduler.core.config.SnapSchedulerConfig;
 
 @Configuration
-@Import( SnapSchedulerConfig.class )
+@Import( SnapAppConfig.class )
 public class SchedulerConfig {
 
+	@Bean( name = "snapDataSource" )
+	public DataSource customDataSource( final DataSourceProperties properties,
+			@Value( "${spring.datasource.hikari.schema}" ) final String schema ) {
+
+		final HikariDataSource dataSource = properties.initializeDataSourceBuilder()
+				.type( HikariDataSource.class ).build();
+
+		dataSource.setPoolName( SNAP_DB_POOL_NAME );
+		
+		if ( !StringUtils.isEmpty( schema ) ) {
+			dataSource.setSchema( schema );
+		}
+
+		return dataSource;
+	}
 	
 }
 ```
@@ -166,7 +196,8 @@ snap:
     enabled: true
     db-polling-interval: 1m
 ```
-## 4. Schedule your tasks
+
+## 5. Schedule your tasks
 To schedule your tasks with Snap Scheduler you have 2 options:
 1. Schedule tasks **without data**
 2. Schedule tasks **with data**
@@ -468,6 +499,9 @@ This project was completely free and open source, under [Apache 2.0 License](htt
 
 # Releases
 The release notes
+
+## 0.7.0
+* Externalization of DataSource configuration
 
 ## 0.6.0
 * Change event listener and upgrade versions of example projects 
