@@ -75,16 +75,15 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
+
 		final List< Task > tasks = new ArrayList<>();
 
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(
+						this.selectTasksForUpdateQuery( this.dbPlatform ), ResultSet.TYPE_FORWARD_ONLY,
+						ResultSet.CONCUR_UPDATABLE
+				) ) {
 			connection.setAutoCommit( true );
-
-			preparedStatement = connection.prepareStatement(
-					this.selectTasksForUpdateQuery( this.dbPlatform ), ResultSet.TYPE_FORWARD_ONLY,
-					ResultSet.CONCUR_UPDATABLE
-			);
 
 			preparedStatement
 					.setTimestamp(
@@ -120,16 +119,6 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		catch ( Exception e ) {
 			log.error( "(SchedulerRepositoryImpl.selectTasks) unexpected error occurred: {}", e.getMessage() );
 		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
-		}
 
 		return tasks;
 	}
@@ -144,11 +133,12 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection
+						.prepareStatement( this.insertQuery( this.dbPlatform ) ) ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( this.insertQuery( this.dbPlatform ) );
 			preparedStatement.setString( 1, task.getName() );
 			preparedStatement.setString( 2, task.getKey() );
 			preparedStatement.setString( 3, task.getType().toString() );
@@ -181,16 +171,6 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 					e.getMessage()
 			);
 		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
-		}
 
 		return false;
 	}
@@ -200,11 +180,11 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement( UPDATE_QUERY ) ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( UPDATE_QUERY );
 			preparedStatement.setTimestamp( 1, Timestamp.from( end ) );
 
 			preparedStatement.setString( 2, key );
@@ -217,16 +197,6 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 					e.getMessage()
 			);
 		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
-		}
 
 		return false;
 	}
@@ -237,11 +207,11 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement( UPDATE_RECURRING_QUERY ) ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( UPDATE_RECURRING_QUERY );
 			preparedStatement.setTimestamp( 1, Timestamp.from( task.getRunAt() ) );
 			preparedStatement.setBoolean( 2, picked );
 			preparedStatement.setString( 3, pickedBy );
@@ -257,16 +227,6 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 					e.getMessage()
 			);
 		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
-		}
 
 		return false;
 	}
@@ -276,11 +236,11 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection
+						.prepareStatement( this.updateNotRunnedQuery( this.dbPlatform ) ) ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( this.updateNotRunnedQuery( this.dbPlatform ) );
 			preparedStatement.setString( 1, server );
 
 			return preparedStatement.executeUpdate() == 1;
@@ -291,16 +251,6 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 					server,
 					e.getMessage()
 			);
-		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
 		}
 
 		return false;
@@ -403,7 +353,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		if ( DbUtils.DB_POSTGRESQL.equals( platform ) ) {
 			return POSTGRE_INSERT_QUERY;
 		}
-		
+
 		return INSERT_QUERY;
 	}
 

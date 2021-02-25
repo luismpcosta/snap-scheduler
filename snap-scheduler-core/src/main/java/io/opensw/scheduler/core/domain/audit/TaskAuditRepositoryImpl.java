@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.opensw.scheduler.core.exceptions.DatabaseException;
-import io.opensw.scheduler.core.utils.DbUtils;
 import io.opensw.scheduler.core.utils.SnapExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,9 +28,9 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 
 	protected static final String INSERT_QUERY = "INSERT INTO snap_task_audit(task_key, task_method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-
 	@Autowired
-	public TaskAuditRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource, final ObjectMapper mapper ) {
+	public TaskAuditRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource,
+			final ObjectMapper mapper ) {
 		this.dataSource = dataSource;
 		this.mapper = mapper;
 	}
@@ -42,11 +41,11 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement( INSERT_QUERY ) ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( INSERT_QUERY );
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
 			preparedStatement.setString( 3, server );
@@ -67,16 +66,7 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 					server, e.getMessage()
 			);
 		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
-		}
+		
 		return false;
 	}
 

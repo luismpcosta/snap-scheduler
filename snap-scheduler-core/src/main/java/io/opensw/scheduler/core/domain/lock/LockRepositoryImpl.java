@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.opensw.scheduler.core.exceptions.DatabaseException;
-import io.opensw.scheduler.core.utils.DbUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,12 +39,12 @@ public class LockRepositoryImpl implements LockRepository {
 		if ( dataSource == null ) {
 			throw new DatabaseException();
 		}
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
-			connection.setAutoCommit( true );
 
-			preparedStatement = connection
-					.prepareStatement( LOCK_SELECT_QUERY, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE );
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(
+						LOCK_SELECT_QUERY, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE
+				) ) {
+			connection.setAutoCommit( true );
 
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
@@ -71,26 +70,15 @@ public class LockRepositoryImpl implements LockRepository {
 					e.getMessage()
 			);
 		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
-		}
 
 		return this.insertLock( key, method, time, server );
 	}
 
 	private boolean insertLock( final String key, final String method, final long time, final String server ) {
-		PreparedStatement preparedStatement = null;
-		try ( Connection connection = dataSource.getConnection() ) {
+		try ( Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement( LOCK_INSERT_QUERY ) ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( LOCK_INSERT_QUERY );
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
 			preparedStatement.setTimestamp( 3, Timestamp.from( Instant.now().plus( time, ChronoUnit.SECONDS ) ) );
@@ -104,16 +92,6 @@ public class LockRepositoryImpl implements LockRepository {
 					"(INSERT) Can not acquire lock for key {} and method {}. Message error: {}", key, method,
 					e.getMessage()
 			);
-		}
-		finally {
-			if ( preparedStatement != null ) {
-				try {
-					preparedStatement.close();
-				}
-				catch ( Exception e ) {
-					log.warn( DbUtils.ERROR_CLOSE_STMT_MSG, e.getMessage() );
-				}
-			}
 		}
 
 		return false;
