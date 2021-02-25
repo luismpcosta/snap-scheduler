@@ -103,8 +103,10 @@ class SchedulerRepositoryTest {
 		OneTimeTask oneTimeTask = OneTimeTask.create( EmailTask.class ).data( email ).dataClazz( Email.class )
 				.key( UUID.randomUUID().toString() ).name( "Task Test" ).runAt( Instant.now().plusSeconds( 60 ) );
 
-		schedulerRepository.insertTask( oneTimeTask );
+		boolean insert = schedulerRepository.insertTask( oneTimeTask );
 
+		assertTrue( insert );
+		
 		results = schedulerRepository.loadTasksToRun( "server-test", 60000 );
 
 		assertFalse( results.isEmpty() );
@@ -171,46 +173,6 @@ class SchedulerRepositoryTest {
 	}
 
 	@Test
-	void updateRecurringTaskQuery() {
-		// DbUtils.DB_MYSQL
-		Object query = ReflectionTestUtils
-				.invokeMethod(
-						schedulerRepository, SchedulerRepositoryImpl.class, "updateRecurringTaskQuery", DbUtils.DB_MYSQL
-				);
-		assertEquals( SchedulerRepositoryImpl.MYSQL_UPDATE_RECURRING_QUERY, query.toString() );
-
-		// DbUtils.DB_MARIADB
-		query = ReflectionTestUtils
-				.invokeMethod(
-						schedulerRepository, SchedulerRepositoryImpl.class, "updateRecurringTaskQuery",
-						DbUtils.DB_MARIADB
-				);
-		assertEquals( SchedulerRepositoryImpl.MYSQL_UPDATE_RECURRING_QUERY, query.toString() );
-
-		// DbUtils.DB_MSSQL_SERVER
-		query = ReflectionTestUtils
-				.invokeMethod(
-						schedulerRepository, SchedulerRepositoryImpl.class, "updateRecurringTaskQuery",
-						DbUtils.DB_MSSQL_SERVER
-				);
-		assertEquals( SchedulerRepositoryImpl.MSSQL_UPDATE_RECURRING_QUERY, query.toString() );
-
-		// DbUtils.DB_H2
-		query = ReflectionTestUtils
-				.invokeMethod(
-						schedulerRepository, SchedulerRepositoryImpl.class, "updateRecurringTaskQuery", DbUtils.DB_H2
-				);
-		assertEquals( SchedulerRepositoryImpl.H2_UPDATE_RECURRING_QUERY, query.toString() );
-
-		// DbUtils.DB_POSTGRESQL
-		query = ReflectionTestUtils.invokeMethod(
-				schedulerRepository, SchedulerRepositoryImpl.class, "updateRecurringTaskQuery", DbUtils.DB_POSTGRESQL
-		);
-		assertEquals( SchedulerRepositoryImpl.POSTGRE_UPDATE_RECURRING_QUERY, query.toString() );
-
-	}
-
-	@Test
 	void updateNotRunnedQuery() {
 		// DbUtils.DB_MYSQL
 		Object query = ReflectionTestUtils
@@ -257,7 +219,7 @@ class SchedulerRepositoryTest {
 						schedulerRepository, SchedulerRepositoryImpl.class, "selectTasksForUpdateQuery",
 						DbUtils.DB_MYSQL
 				);
-		assertEquals( SchedulerRepositoryImpl.MYSQL_SELECT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.MYSQL_POSTGRE_SELECT_QUERY, query.toString() );
 
 		// DbUtils.DB_MARIADB
 		query = ReflectionTestUtils
@@ -265,7 +227,7 @@ class SchedulerRepositoryTest {
 						schedulerRepository, SchedulerRepositoryImpl.class, "selectTasksForUpdateQuery",
 						DbUtils.DB_MARIADB
 				);
-		assertEquals( SchedulerRepositoryImpl.MYSQL_SELECT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.MYSQL_POSTGRE_SELECT_QUERY, query.toString() );
 
 		// DbUtils.DB_MSSQL_SERVER
 		query = ReflectionTestUtils
@@ -273,20 +235,20 @@ class SchedulerRepositoryTest {
 						schedulerRepository, SchedulerRepositoryImpl.class, "selectTasksForUpdateQuery",
 						DbUtils.DB_MSSQL_SERVER
 				);
-		assertEquals( SchedulerRepositoryImpl.MSSQL_SELECT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.MSSQL_H2_SELECT_QUERY, query.toString() );
 
 		// DbUtils.DB_H2
 		query = ReflectionTestUtils
 				.invokeMethod(
 						schedulerRepository, SchedulerRepositoryImpl.class, "selectTasksForUpdateQuery", DbUtils.DB_H2
 				);
-		assertEquals( SchedulerRepositoryImpl.H2_SELECT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.MSSQL_H2_SELECT_QUERY, query.toString() );
 
 		// DbUtils.DB_POSTGRESQL
 		query = ReflectionTestUtils.invokeMethod(
 				schedulerRepository, SchedulerRepositoryImpl.class, "selectTasksForUpdateQuery", DbUtils.DB_POSTGRESQL
 		);
-		assertEquals( SchedulerRepositoryImpl.POSTGRE_SELECT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.MYSQL_POSTGRE_SELECT_QUERY, query.toString() );
 
 	}
 
@@ -295,26 +257,26 @@ class SchedulerRepositoryTest {
 		// DbUtils.DB_MYSQL
 		Object query = ReflectionTestUtils
 				.invokeMethod( schedulerRepository, SchedulerRepositoryImpl.class, "insertQuery", DbUtils.DB_MYSQL );
-		assertEquals( SchedulerRepositoryImpl.MYSQL_INSERT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.INSERT_QUERY, query.toString() );
 
 		// DbUtils.DB_MARIADB
 		query = ReflectionTestUtils
 				.invokeMethod( schedulerRepository, SchedulerRepositoryImpl.class, "insertQuery", DbUtils.DB_MARIADB );
-		assertEquals( SchedulerRepositoryImpl.MYSQL_INSERT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.INSERT_QUERY, query.toString() );
 
 		// DbUtils.DB_MSSQL_SERVER
 		query = ReflectionTestUtils
 				.invokeMethod(
 						schedulerRepository, SchedulerRepositoryImpl.class, "insertQuery", DbUtils.DB_MSSQL_SERVER
 				);
-		assertEquals( SchedulerRepositoryImpl.MSSQL_INSERT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.INSERT_QUERY, query.toString() );
 
 		// DbUtils.DB_H2
 		query = ReflectionTestUtils
 				.invokeMethod(
 						schedulerRepository, SchedulerRepositoryImpl.class, "insertQuery", DbUtils.DB_H2
 				);
-		assertEquals( SchedulerRepositoryImpl.H2_INSERT_QUERY, query.toString() );
+		assertEquals( SchedulerRepositoryImpl.INSERT_QUERY, query.toString() );
 
 		// DbUtils.DB_POSTGRESQL
 		query = ReflectionTestUtils.invokeMethod(
@@ -324,37 +286,4 @@ class SchedulerRepositoryTest {
 
 	}
 
-	@Test
-	void updateQuery() {
-		// DbUtils.DB_MYSQL
-		Object query = ReflectionTestUtils
-				.invokeMethod( schedulerRepository, SchedulerRepositoryImpl.class, "updateQuery", DbUtils.DB_MYSQL );
-		assertEquals( SchedulerRepositoryImpl.MYSQL_UPDATE_QUERY, query.toString() );
-
-		// DbUtils.DB_MARIADB
-		query = ReflectionTestUtils
-				.invokeMethod( schedulerRepository, SchedulerRepositoryImpl.class, "updateQuery", DbUtils.DB_MARIADB );
-		assertEquals( SchedulerRepositoryImpl.MYSQL_UPDATE_QUERY, query.toString() );
-
-		// DbUtils.DB_MSSQL_SERVER
-		query = ReflectionTestUtils
-				.invokeMethod(
-						schedulerRepository, SchedulerRepositoryImpl.class, "updateQuery", DbUtils.DB_MSSQL_SERVER
-				);
-		assertEquals( SchedulerRepositoryImpl.MSSQL_UPDATE_QUERY, query.toString() );
-
-		// DbUtils.DB_H2
-		query = ReflectionTestUtils
-				.invokeMethod(
-						schedulerRepository, SchedulerRepositoryImpl.class, "updateQuery", DbUtils.DB_H2
-				);
-		assertEquals( SchedulerRepositoryImpl.H2_UPDATE_QUERY, query.toString() );
-
-		// DbUtils.DB_POSTGRESQL
-		query = ReflectionTestUtils.invokeMethod(
-				schedulerRepository, SchedulerRepositoryImpl.class, "updateQuery", DbUtils.DB_POSTGRESQL
-		);
-		assertEquals( SchedulerRepositoryImpl.POSTGRE_UPDATE_QUERY, query.toString() );
-
-	}
 }

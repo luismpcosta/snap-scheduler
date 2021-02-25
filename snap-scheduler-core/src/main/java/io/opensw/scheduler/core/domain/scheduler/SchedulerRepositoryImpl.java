@@ -38,52 +38,33 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 	private final String dbPlatform;
 
 	// insert new task
-	protected static final String MYSQL_INSERT_QUERY = "INSERT INTO snap_scheduler(name, `key`, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	protected static final String INSERT_QUERY = "INSERT INTO snap_scheduler(name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	protected static final String POSTGRE_INSERT_QUERY = "INSERT INTO snap_scheduler(name, key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by) VALUES (?, ?, ?, ?, ?::jsonb, ?, ?, ?, ?, ?);";
-
-	protected static final String MSSQL_INSERT_QUERY = "INSERT INTO snap_scheduler(name, [key], type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-
-	protected static final String H2_INSERT_QUERY = "INSERT INTO snap_scheduler(name, key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	protected static final String POSTGRE_INSERT_QUERY = "INSERT INTO snap_scheduler(name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by) VALUES (?, ?, ?, ?, ?::jsonb, ?, ?, ?, ?, ?);";
 
 	// select tasks in period and lock task
-	protected static final String MYSQL_SELECT_QUERY = "SELECT name, `key`, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = false AND run_at < ? order by run_at asc FOR UPDATE;";
+	protected static final String MYSQL_POSTGRE_SELECT_QUERY = "SELECT name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = false AND run_at < ? order by run_at asc FOR UPDATE;";
 
-	protected static final String POSTGRE_SELECT_QUERY = "SELECT name, key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = false AND run_at < ? order by run_at asc FOR UPDATE;";
-
-	protected static final String MSSQL_SELECT_QUERY = "SELECT name, [key], type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = 0 AND run_at < ? order by run_at asc FOR UPDATE;";
-
-	protected static final String H2_SELECT_QUERY = "SELECT name, key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = 0 AND run_at < ? order by run_at asc FOR UPDATE;";
+	protected static final String MSSQL_H2_SELECT_QUERY = "SELECT name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = 0 AND run_at < ? order by run_at asc FOR UPDATE;";
 
 	// update task after run
-	protected static final String MYSQL_UPDATE_QUERY = "UPDATE snap_scheduler SET end_run = ? WHERE `key` = ?;";
-
-	protected static final String POSTGRE_UPDATE_QUERY = "UPDATE snap_scheduler SET end_run = ? WHERE key = ?;";
-
-	protected static final String MSSQL_UPDATE_QUERY = "UPDATE snap_scheduler SET end_run = ? WHERE [key] = ?;";
-
-	protected static final String H2_UPDATE_QUERY = "UPDATE snap_scheduler SET end_run = ? WHERE key = ?;";
+	protected static final String UPDATE_QUERY = "UPDATE snap_scheduler SET end_run = ? WHERE task_key = ?;";
 
 	// update recurring task after run
-	protected static final String MYSQL_UPDATE_RECURRING_QUERY = "UPDATE snap_scheduler SET run_at = ?, picked = ?, picked_by = ?, end_run = null WHERE `key` = ?;";
-
-	protected static final String POSTGRE_UPDATE_RECURRING_QUERY = "UPDATE snap_scheduler SET run_at = ?, picked = ?, picked_by = ?, end_run = null WHERE key = ?;";
-
-	protected static final String MSSQL_UPDATE_RECURRING_QUERY = "UPDATE snap_scheduler SET run_at = ?, picked = ?, picked_by = ?, end_run = null WHERE [key] = ?;";
-
-	protected static final String H2_UPDATE_RECURRING_QUERY = "UPDATE snap_scheduler SET run_at = ?, picked = ?, picked_by = ?, end_run = null WHERE key = ?;";
+	protected static final String UPDATE_RECURRING_QUERY = "UPDATE snap_scheduler SET run_at = ?, picked = ?, picked_by = ?, end_run = null WHERE task_key = ?;";
 
 	// update task after run
 	protected static final String POSTGRE_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET  picked_by = null, picked = false WHERE picked = true AND end_run is null AND picked_by = ?;";
 
-	protected static final String MYSQL_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = false WHERE `key` in (select `key` from snap_scheduler where picked = true AND end_run is null AND picked_by = ?);";
+	protected static final String MYSQL_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = false WHERE task_key in (select task_key from snap_scheduler where picked = true AND end_run is null AND picked_by = ?);";
 
 	protected static final String MSSQL_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = 0 WHERE picked = 1 AND end_run is null AND picked_by = ?;";
 
 	protected static final String H2_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = 0 WHERE picked = 1 AND end_run is null AND picked_by = ?;";
 
 	@Autowired
-	public SchedulerRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource, final ObjectMapper mapper ) {
+	public SchedulerRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource,
+			final ObjectMapper mapper ) {
 		this.dataSource = dataSource;
 		this.mapper = mapper;
 		this.dbPlatform = DbUtils.databaseType( dataSource );
@@ -223,7 +204,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		try ( Connection connection = dataSource.getConnection() ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( this.updateQuery( this.dbPlatform ) );
+			preparedStatement = connection.prepareStatement( UPDATE_QUERY );
 			preparedStatement.setTimestamp( 1, Timestamp.from( end ) );
 
 			preparedStatement.setString( 2, key );
@@ -260,7 +241,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		try ( Connection connection = dataSource.getConnection() ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( this.updateRecurringTaskQuery( this.dbPlatform ) );
+			preparedStatement = connection.prepareStatement( UPDATE_RECURRING_QUERY );
 			preparedStatement.setTimestamp( 1, Timestamp.from( task.getRunAt() ) );
 			preparedStatement.setBoolean( 2, picked );
 			preparedStatement.setString( 3, pickedBy );
@@ -329,7 +310,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 	private OneTimeTask buildOneTimeTaskFromResultSet( final ResultSet resultSet ) {
 		try {
 			OneTimeTask task = OneTimeTask.create( Class.forName( resultSet.getString( "task_class" ) ) )
-					.name( resultSet.getString( "name" ) ).key( resultSet.getString( "key" ) )
+					.name( resultSet.getString( "name" ) ).key( resultSet.getString( "task_key" ) )
 					.runAt( resultSet.getTimestamp( "run_at" ).toInstant() );
 
 			// process data of task
@@ -356,7 +337,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 	private RecurringTask buildRecurringTaskFromResultSet( final ResultSet resultSet ) {
 		try {
 			RecurringTask task = RecurringTask.create( Class.forName( resultSet.getString( "task_class" ) ) )
-					.name( resultSet.getString( "name" ) ).key( resultSet.getString( "key" ) )
+					.name( resultSet.getString( "name" ) ).key( resultSet.getString( "task_key" ) )
 					.runAt( resultSet.getTimestamp( "run_at" ).toInstant() )
 					.recurrence( Duration.parse( resultSet.getString( "recurrence" ) ) );
 
@@ -378,25 +359,6 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 			);
 		}
 		return null;
-	}
-
-	private String updateRecurringTaskQuery( final String platform ) {
-		switch ( platform ) {
-		case DbUtils.DB_MYSQL:
-			return MYSQL_UPDATE_RECURRING_QUERY;
-
-		case DbUtils.DB_MARIADB:
-			return MYSQL_UPDATE_RECURRING_QUERY;
-
-		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_UPDATE_RECURRING_QUERY;
-
-		case DbUtils.DB_H2:
-			return H2_UPDATE_RECURRING_QUERY;
-
-		default:
-			return POSTGRE_UPDATE_RECURRING_QUERY;
-		}
 	}
 
 	private String updateNotRunnedQuery( final String platform ) {
@@ -421,57 +383,28 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 	private String selectTasksForUpdateQuery( final String platform ) {
 		switch ( platform ) {
 		case DbUtils.DB_MYSQL:
-			return MYSQL_SELECT_QUERY;
+			return MYSQL_POSTGRE_SELECT_QUERY;
 
 		case DbUtils.DB_MARIADB:
-			return MYSQL_SELECT_QUERY;
+			return MYSQL_POSTGRE_SELECT_QUERY;
 
 		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_SELECT_QUERY;
+			return MSSQL_H2_SELECT_QUERY;
 
 		case DbUtils.DB_H2:
-			return H2_SELECT_QUERY;
+			return MSSQL_H2_SELECT_QUERY;
 
 		default:
-			return POSTGRE_SELECT_QUERY;
+			return MYSQL_POSTGRE_SELECT_QUERY;
 		}
 	}
 
 	private String insertQuery( final String platform ) {
-		switch ( platform ) {
-		case DbUtils.DB_MYSQL:
-			return MYSQL_INSERT_QUERY;
-
-		case DbUtils.DB_MARIADB:
-			return MYSQL_INSERT_QUERY;
-
-		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_INSERT_QUERY;
-
-		case DbUtils.DB_H2:
-			return H2_INSERT_QUERY;
-
-		default:
+		if ( DbUtils.DB_POSTGRESQL.equals( platform ) ) {
 			return POSTGRE_INSERT_QUERY;
 		}
+		
+		return INSERT_QUERY;
 	}
 
-	private String updateQuery( final String platform ) {
-		switch ( platform ) {
-		case DbUtils.DB_MYSQL:
-			return MYSQL_UPDATE_QUERY;
-
-		case DbUtils.DB_MARIADB:
-			return MYSQL_UPDATE_QUERY;
-
-		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_UPDATE_QUERY;
-
-		case DbUtils.DB_H2:
-			return H2_UPDATE_QUERY;
-
-		default:
-			return POSTGRE_UPDATE_QUERY;
-		}
-	}
 }
