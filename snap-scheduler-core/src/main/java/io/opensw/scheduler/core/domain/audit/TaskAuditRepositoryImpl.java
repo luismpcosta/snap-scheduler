@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.opensw.scheduler.core.exceptions.DatabaseException;
+import io.opensw.scheduler.core.utils.DbUtils;
 import io.opensw.scheduler.core.utils.SnapExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,14 +26,19 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 	private final DataSource dataSource;
 
 	private final ObjectMapper mapper;
+	
+	private final String dbPlatform;
 
 	protected static final String INSERT_QUERY = "INSERT INTO snap_task_audit(task_key, task_method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
+	protected static final String POSTGRE_INSERT_QUERY = "INSERT INTO snap_task_audit(key, method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?::jsonb);";
+	
 	@Autowired
 	public TaskAuditRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource,
 			final ObjectMapper mapper ) {
 		this.dataSource = dataSource;
 		this.mapper = mapper;
+		this.dbPlatform = DbUtils.databaseType( dataSource );
 	}
 
 	@Override
@@ -43,7 +49,7 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 		}
 
 		try ( Connection connection = dataSource.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement( INSERT_QUERY ) ) {
+				PreparedStatement preparedStatement = connection.prepareStatement( this.insertQuery( this.dbPlatform ) ) ) {
 			connection.setAutoCommit( true );
 
 			preparedStatement.setString( 1, key );
@@ -70,4 +76,14 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 		return false;
 	}
 
+	private String insertQuery( final String platform ) {
+		switch ( platform ) {
+		case DbUtils.DB_POSTGRESQL:
+			return POSTGRE_INSERT_QUERY;
+
+
+		default:
+			return INSERT_QUERY;
+		}
+	}
 }
