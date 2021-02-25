@@ -1,6 +1,6 @@
 # snap-scheduler
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.6.0)
+![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.7.0)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=coverage)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=security_rating)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 
@@ -37,31 +37,31 @@ To use @SnapLock annotation and prevent multiple runs of task you need to:
 3. Annotate @Scheduled methods with @SnapLock
 
 ## 1. Import project dependency
-To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.6.0/snap-scheduler-core-0.6.0-javadoc.jar) and configure mannualy in your project.
+To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.7.0/snap-scheduler-core-0.7.0-javadoc.jar) and configure mannualy in your project.
 
 ### Maven
 ```xml
 <dependency>
   <groupId>io.opensw.scheduler</groupId>
   <artifactId>snap-scheduler-core</artifactId>
-  <version>0.6.0</version>
+  <version>0.7.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```xml
-implementation 'io.opensw.scheduler:snap-scheduler-core:0.6.0'
+implementation 'io.opensw.scheduler:snap-scheduler-core:0.7.0'
 ```
 
-[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.6.0/jar) dependency management.
+[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.7.0/jar) dependency management.
 
 ## 2. Create required database tables
 The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap_task_audit" tables. 
 
 See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
-## 3. Import SnapSchedulerConfig
-To setup SnapScheduler you need to import predefined confiuration (SnapSchedulerConfig) or create similar configuration in project.
+## 3. Import SnapAppConfig
+To setup SnapScheduler you need to import predefined confiuration (SnapAppConfig) and add DataSource creation/configuration.
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -70,9 +70,26 @@ import org.springframework.context.annotation.Import;
 import io.opensw.scheduler.core.config.SnapSchedulerConfig;
 
 @Configuration
-@Import( SnapSchedulerConfig.class )
+@Import( SnapAppConfig.class )
 public class SchedulerConfig {
+	
+	private static final String SNAP_DB_POOL_NAME = "snap-pool";
+	
+	@Bean( name = "snapDataSource" )
+	public DataSource customDataSource( final DataSourceProperties properties,
+			@Value( "${spring.datasource.hikari.schema}" ) final String schema ) {
 
+		final HikariDataSource dataSource = properties.initializeDataSourceBuilder()
+				.type( HikariDataSource.class ).build();
+
+		dataSource.setPoolName( SNAP_DB_POOL_NAME );
+		
+		if ( !StringUtils.isEmpty( schema ) ) {
+			dataSource.setSchema( schema );
+		}
+
+		return dataSource;
+	}
 	
 }
 ```
@@ -114,31 +131,31 @@ To schedule tasks with this functionality you only need to:
 **Do not forget that Snap Scheduler prevents multiple runs of the same task when you have a microservice deployed in many nodes.**
 
 ## 1. Import project dependency
-To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.6.0/snap-scheduler-core-0.6.0-javadoc.jar) and configure mannualy in your project.
+To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.7.0/snap-scheduler-core-0.7.0-javadoc.jar) and configure mannualy in your project.
 
 ### Maven
 ```xml
 <dependency>
   <groupId>io.opensw.scheduler</groupId>
   <artifactId>snap-scheduler-core</artifactId>
-  <version>0.6.0</version>
+  <version>0.7.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```xml
-implementation 'io.opensw.scheduler:snap-scheduler-core:0.6.0'
+implementation 'io.opensw.scheduler:snap-scheduler-core:0.7.0'
 ```
 
-[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.6.0/jar) dependency management.
+[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.7.0/jar) dependency management.
 
 ## 2. Create required database tables
 The Snap Scheduler mandatory tables that need to be created are "snap_scheduler" and "snap_task_audit" tables. 
 
 See table definition for [PosgreSQL](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/postgresql.sql), [Micosoft SQL Server](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mssqlserver.sql), [MySQL/MariaDB](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/mysql.sql) or [H2](https://github.com/luismpcosta/snap-scheduler/blob/main/snap-scheduler-core/sql/h2.sql).
 
-## 3. Import SnapSchedulerConfig
-To setup SnapScheduler you need to import predefined confiuration (SnapSchedulerConfig) or create similar configuration in project.
+## 3. Import SnapAppConfig
+To setup SnapScheduler you need to import predefined confiuration (SnapAppConfig) and add DataSource creation/configuration.
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -147,9 +164,26 @@ import org.springframework.context.annotation.Import;
 import io.opensw.scheduler.core.config.SnapSchedulerConfig;
 
 @Configuration
-@Import( SnapSchedulerConfig.class )
+@Import( SnapAppConfig.class )
 public class SchedulerConfig {
+	
+	private static final String SNAP_DB_POOL_NAME = "snap-pool";
+	
+	@Bean( name = "snapDataSource" )
+	public DataSource customDataSource( final DataSourceProperties properties,
+			@Value( "${spring.datasource.hikari.schema}" ) final String schema ) {
 
+		final HikariDataSource dataSource = properties.initializeDataSourceBuilder()
+				.type( HikariDataSource.class ).build();
+
+		dataSource.setPoolName( SNAP_DB_POOL_NAME );
+		
+		if ( !StringUtils.isEmpty( schema ) ) {
+			dataSource.setSchema( schema );
+		}
+
+		return dataSource;
+	}
 	
 }
 ```
@@ -166,7 +200,8 @@ snap:
     enabled: true
     db-polling-interval: 1m
 ```
-## 4. Schedule your tasks
+
+## 5. Schedule your tasks
 To schedule your tasks with Snap Scheduler you have 2 options:
 1. Schedule tasks **without data**
 2. Schedule tasks **with data**
@@ -468,6 +503,9 @@ This project was completely free and open source, under [Apache 2.0 License](htt
 
 # Releases
 The release notes
+
+## 0.7.0
+* Externalization of DataSource configuration
 
 ## 0.6.0
 * Change event listener and upgrade versions of example projects 
