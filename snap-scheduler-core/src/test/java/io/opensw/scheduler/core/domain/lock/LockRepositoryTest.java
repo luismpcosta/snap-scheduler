@@ -2,7 +2,6 @@ package io.opensw.scheduler.core.domain.lock;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -16,10 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.opensw.scheduler.core.exceptions.DatabaseException;
-import io.opensw.scheduler.core.utils.DbUtils;
 
 @RunWith( JUnitPlatform.class )
 class LockRepositoryTest {
@@ -90,74 +87,6 @@ class LockRepositoryTest {
 		boolean result = lockRepository.lockTask( null, "io.opensw.scheduler", 60000, "server-test" );
 
 		assertFalse( result );
-	}
-
-	@Test
-	void insertQuery() {
-		// DbUtils.DB_MYSQL
-		Object query = ReflectionTestUtils
-				.invokeMethod( lockRepository, LockRepositoryImpl.class, "insertQuery", DbUtils.DB_MYSQL );
-		assertEquals( LockRepositoryImpl.MYSQL_LOCK_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_MARIADB
-		query = ReflectionTestUtils
-				.invokeMethod( lockRepository, LockRepositoryImpl.class, "insertQuery", DbUtils.DB_MARIADB );
-		assertEquals( LockRepositoryImpl.MYSQL_LOCK_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_MSSQL_SERVER
-		query = ReflectionTestUtils
-				.invokeMethod(
-						lockRepository, LockRepositoryImpl.class, "insertQuery", DbUtils.DB_MSSQL_SERVER
-				);
-		assertEquals( LockRepositoryImpl.MSSQL_LOCK_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_H2
-		query = ReflectionTestUtils
-				.invokeMethod(
-						lockRepository, LockRepositoryImpl.class, "insertQuery", DbUtils.DB_H2
-				);
-		assertEquals( LockRepositoryImpl.H2_LOCK_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_POSTGRESQL
-		query = ReflectionTestUtils.invokeMethod(
-				lockRepository, LockRepositoryImpl.class, "insertQuery", DbUtils.DB_POSTGRESQL
-		);
-		assertEquals( LockRepositoryImpl.POSTGRE_LOCK_INSERT_QUERY, query.toString() );
-
-	}
-
-	@Test
-	void selectForUpdateQuery() {
-		// DbUtils.DB_MYSQL
-		Object query = ReflectionTestUtils
-				.invokeMethod( lockRepository, LockRepositoryImpl.class, "selectForUpdateQuery", DbUtils.DB_MYSQL );
-		assertEquals( LockRepositoryImpl.MYSQL_LOCK_SELECT_QUERY, query.toString() );
-
-		// DbUtils.DB_MARIADB
-		query = ReflectionTestUtils
-				.invokeMethod( lockRepository, LockRepositoryImpl.class, "selectForUpdateQuery", DbUtils.DB_MARIADB );
-		assertEquals( LockRepositoryImpl.MYSQL_LOCK_SELECT_QUERY, query.toString() );
-
-		// DbUtils.DB_MSSQL_SERVER
-		query = ReflectionTestUtils
-				.invokeMethod(
-						lockRepository, LockRepositoryImpl.class, "selectForUpdateQuery", DbUtils.DB_MSSQL_SERVER
-				);
-		assertEquals( LockRepositoryImpl.MSSQL_LOCK_SELECT_QUERY, query.toString() );
-
-		// DbUtils.DB_H2
-		query = ReflectionTestUtils
-				.invokeMethod(
-						lockRepository, LockRepositoryImpl.class, "selectForUpdateQuery", DbUtils.DB_H2
-				);
-		assertEquals( LockRepositoryImpl.H2_LOCK_SELECT_QUERY, query.toString() );
-
-		// DbUtils.DB_POSTGRESQL
-		query = ReflectionTestUtils.invokeMethod(
-				lockRepository, LockRepositoryImpl.class, "selectForUpdateQuery", DbUtils.DB_POSTGRESQL
-		);
-		assertEquals( LockRepositoryImpl.POSTGRE_LOCK_SELECT_QUERY, query.toString() );
-
 	}
 
 }

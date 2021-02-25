@@ -25,23 +25,15 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 
 	private final DataSource dataSource;
 
-	private final String dbPlatform;
-
 	private final ObjectMapper mapper;
 
-	protected static final String MYSQL_INSERT_QUERY = "INSERT INTO snap_task_audit(`key`, `method`, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	protected static final String INSERT_QUERY = "INSERT INTO snap_task_audit(task_key, task_method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-	protected static final String POSTGRE_INSERT_QUERY = "INSERT INTO snap_task_audit(key, method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?::jsonb);";
-
-	protected static final String MSSQL_INSERT_QUERY = "INSERT INTO snap_task_audit([key], method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
-
-	protected static final String H2_INSERT_QUERY = "INSERT INTO snap_task_audit(key, method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
 	@Autowired
 	public TaskAuditRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource, final ObjectMapper mapper ) {
 		this.dataSource = dataSource;
 		this.mapper = mapper;
-		this.dbPlatform = DbUtils.databaseType( dataSource );
 	}
 
 	@Override
@@ -54,7 +46,7 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 		try ( Connection connection = dataSource.getConnection() ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( this.insertQuery( this.dbPlatform ) );
+			preparedStatement = connection.prepareStatement( INSERT_QUERY );
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
 			preparedStatement.setString( 3, server );
@@ -88,22 +80,4 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 		return false;
 	}
 
-	private String insertQuery( final String platform ) {
-		switch ( platform ) {
-		case DbUtils.DB_MYSQL:
-			return MYSQL_INSERT_QUERY;
-
-		case DbUtils.DB_MARIADB:
-			return MYSQL_INSERT_QUERY;
-
-		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_INSERT_QUERY;
-
-		case DbUtils.DB_H2:
-			return H2_INSERT_QUERY;
-
-		default:
-			return POSTGRE_INSERT_QUERY;
-		}
-	}
 }

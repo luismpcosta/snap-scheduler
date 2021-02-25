@@ -6,7 +6,7 @@
 
 	<groupId>io.opensw.scheduler</groupId>
 	<artifactId>snap-scheduler-core</artifactId>
-	<version>0.7.0</version>
+	<version>0.8.0</version>
 
 	<name>${project.artifactId}</name>
 	<description>Snap Scheduler it is a project to solve some common needs

@@ -23,30 +23,15 @@ public class LockRepositoryImpl implements LockRepository {
 
 	private final DataSource dataSource;
 
-	private final String dbPlatform;
-
 	// select task and lock
-	protected static final String MYSQL_LOCK_SELECT_QUERY = "SELECT `key`, `method`, lock_until, lock_at, lock_by FROM snap_lock WHERE `key` = ? AND `method` = ? FOR UPDATE";
-
-	protected static final String POSTGRE_LOCK_SELECT_QUERY = "SELECT key, method, lock_until, lock_at, lock_by FROM snap_lock WHERE key = ? AND method = ? FOR UPDATE";
-
-	protected static final String MSSQL_LOCK_SELECT_QUERY = "SELECT [key], method, lock_until, lock_at, lock_by FROM snap_lock WHERE [key] = ? AND method = ? FOR UPDATE";
-
-	protected static final String H2_LOCK_SELECT_QUERY = "SELECT key, method, lock_until, lock_at, lock_by FROM snap_lock WHERE key = ? AND method = ? FOR UPDATE";
+	protected static final String LOCK_SELECT_QUERY = "SELECT task_key, task_method, lock_until, lock_at, lock_by FROM snap_lock WHERE task_key = ? AND task_method = ? FOR UPDATE";
 
 	// insert lock
-	protected static final String MYSQL_LOCK_INSERT_QUERY = "INSERT INTO snap_lock (`key`, `method`, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
-
-	protected static final String POSTGRE_LOCK_INSERT_QUERY = "INSERT INTO snap_lock (key, method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
-
-	protected static final String MSSQL_LOCK_INSERT_QUERY = "INSERT INTO snap_lock ([key], method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
-
-	protected static final String H2_LOCK_INSERT_QUERY = "INSERT INTO snap_lock (key, method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
+	protected static final String LOCK_INSERT_QUERY = "INSERT INTO snap_lock (task_key, task_method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
 
 	@Autowired
-	public LockRepositoryImpl( @Qualifier("snapDataSource") final DataSource dataSource ) {
+	public LockRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource ) {
 		this.dataSource = dataSource;
-		this.dbPlatform = DbUtils.databaseType( dataSource );
 	}
 
 	@Override
@@ -59,10 +44,8 @@ public class LockRepositoryImpl implements LockRepository {
 		try ( Connection connection = dataSource.getConnection() ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement(
-					this.selectForUpdateQuery( this.dbPlatform ), ResultSet.TYPE_FORWARD_ONLY,
-					ResultSet.CONCUR_UPDATABLE
-			);
+			preparedStatement = connection
+					.prepareStatement( LOCK_SELECT_QUERY, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE );
 
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
@@ -107,7 +90,7 @@ public class LockRepositoryImpl implements LockRepository {
 		try ( Connection connection = dataSource.getConnection() ) {
 			connection.setAutoCommit( true );
 
-			preparedStatement = connection.prepareStatement( this.insertQuery( this.dbPlatform ) );
+			preparedStatement = connection.prepareStatement( LOCK_INSERT_QUERY );
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
 			preparedStatement.setTimestamp( 3, Timestamp.from( Instant.now().plus( time, ChronoUnit.SECONDS ) ) );
@@ -136,41 +119,4 @@ public class LockRepositoryImpl implements LockRepository {
 		return false;
 	}
 
-	private String selectForUpdateQuery( final String platform ) {
-		switch ( platform ) {
-		case DbUtils.DB_MYSQL:
-			return MYSQL_LOCK_SELECT_QUERY;
-
-		case DbUtils.DB_MARIADB:
-			return MYSQL_LOCK_SELECT_QUERY;
-
-		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_LOCK_SELECT_QUERY;
-
-		case DbUtils.DB_H2:
-			return H2_LOCK_SELECT_QUERY;
-
-		default:
-			return POSTGRE_LOCK_SELECT_QUERY;
-		}
-	}
-
-	private String insertQuery( final String platform ) {
-		switch ( platform ) {
-		case DbUtils.DB_MYSQL:
-			return MYSQL_LOCK_INSERT_QUERY;
-
-		case DbUtils.DB_MARIADB:
-			return MYSQL_LOCK_INSERT_QUERY;
-
-		case DbUtils.DB_MSSQL_SERVER:
-			return MSSQL_LOCK_INSERT_QUERY;
-
-		case DbUtils.DB_H2:
-			return H2_LOCK_INSERT_QUERY;
-
-		default:
-			return POSTGRE_LOCK_INSERT_QUERY;
-		}
-	}
 }

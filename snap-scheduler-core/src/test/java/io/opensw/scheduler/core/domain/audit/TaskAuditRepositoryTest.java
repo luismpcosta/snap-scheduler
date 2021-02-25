@@ -2,7 +2,6 @@ package io.opensw.scheduler.core.domain.audit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.SQLException;
 import java.time.Instant;
@@ -17,12 +16,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.opensw.scheduler.core.exceptions.DatabaseException;
-import io.opensw.scheduler.core.utils.DbUtils;
 
 @RunWith( JUnitPlatform.class )
 class TaskAuditRepositoryTest {
@@ -72,40 +69,6 @@ class TaskAuditRepositoryTest {
 		);
 
 		assertFalse( result );
-	}
-
-	@Test
-	void insertQuery() throws SQLException, DatabaseException {
-		// DbUtils.DB_MYSQL
-		Object query = ReflectionTestUtils
-				.invokeMethod( taskAuditRepository, TaskAuditRepositoryImpl.class, "insertQuery", DbUtils.DB_MYSQL );
-		assertEquals( TaskAuditRepositoryImpl.MYSQL_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_MARIADB
-		query = ReflectionTestUtils
-				.invokeMethod( taskAuditRepository, TaskAuditRepositoryImpl.class, "insertQuery", DbUtils.DB_MARIADB );
-		assertEquals( TaskAuditRepositoryImpl.MYSQL_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_MSSQL_SERVER
-		query = ReflectionTestUtils
-				.invokeMethod(
-						taskAuditRepository, TaskAuditRepositoryImpl.class, "insertQuery", DbUtils.DB_MSSQL_SERVER
-				);
-		assertEquals( TaskAuditRepositoryImpl.MSSQL_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_H2
-		query = ReflectionTestUtils
-				.invokeMethod(
-						taskAuditRepository, TaskAuditRepositoryImpl.class, "insertQuery", DbUtils.DB_H2
-				);
-		assertEquals( TaskAuditRepositoryImpl.H2_INSERT_QUERY, query.toString() );
-
-		// DbUtils.DB_POSTGRESQL
-		query = ReflectionTestUtils.invokeMethod(
-				taskAuditRepository, TaskAuditRepositoryImpl.class, "insertQuery", DbUtils.DB_POSTGRESQL
-		);
-		assertEquals( TaskAuditRepositoryImpl.POSTGRE_INSERT_QUERY, query.toString() );
-
 	}
 
 }
