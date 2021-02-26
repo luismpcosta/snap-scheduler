@@ -198,7 +198,7 @@ In application.yml file you can configure snap scheduler properties.
 snap:
   scheduler:
     enabled: true
-    db-polling-interval: 1m
+    db-polling-interval: PT1M
 ```
 
 ## 5. Schedule your tasks
@@ -469,7 +469,7 @@ To configure a database diferent of application database you can configure it li
 snap:
   scheduler:
     enabled: true
-    db-polling-interval: 1m
+    db-polling-interval: PT1M
     datasource:
       url: ${PG_JDBC_URL:jdbc:postgresql://localhost/snap}
       username: ${PG_USRNAME:postgres}
