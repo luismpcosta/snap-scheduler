@@ -503,6 +503,11 @@ This project was completely free and open source, under [Apache 2.0 License](htt
 
 # Releases
 The release notes
+
+## 0.9.0 to 0.15.0
+* Bug fix after first integration in marketplace platform
+* Improve lock queries
+
 ## 0.8.0
 * Improve code of repositories implementation
 * Change database schema to remove databse reserved words from table schema, columns, keys, etc 
