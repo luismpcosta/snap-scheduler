@@ -1,6 +1,6 @@
 # snap-scheduler
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.11.0)
+![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.15.0)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=coverage)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=security_rating)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 
