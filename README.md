@@ -1,6 +1,6 @@
 # snap-scheduler
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.8.0)
+![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/io.opensw.scheduler/snap-scheduler-core/0.11.0)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=coverage)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=luismpcosta_snap-scheduler&metric=security_rating)](https://sonarcloud.io/dashboard?id=luismpcosta_snap-scheduler)
 
@@ -37,7 +37,7 @@ To use @SnapLock annotation and prevent multiple runs of task you need to:
 3. Annotate @Scheduled methods with @SnapLock
 
 ## 1. Import project dependency
-To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.8.0/snap-scheduler-core-0.8.0-javadoc.jar) and configure mannualy in your project.
+To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.11.0/snap-scheduler-core-0.11.0-javadoc.jar) and configure mannualy in your project.
 
 ### Maven
 ```xml
@@ -50,10 +50,10 @@ To import this project dependecy to your project you can use maven, gradle, etc.
 
 ### Gradle
 ```xml
-implementation 'io.opensw.scheduler:snap-scheduler-core:0.8.0'
+implementation 'io.opensw.scheduler:snap-scheduler-core:0.11.0'
 ```
 
-[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.8.0/jar) dependency management.
+[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.11.0/jar) dependency management.
 
 ## 2. Create required database tables
 The @SnapLock mandatory tables that need to be created are "snap_lock" and "snap_task_audit" tables. 
@@ -131,7 +131,7 @@ To schedule tasks with this functionality you only need to:
 **Do not forget that Snap Scheduler prevents multiple runs of the same task when you have a microservice deployed in many nodes.**
 
 ## 1. Import project dependency
-To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.8.0/snap-scheduler-core-0.8.0-javadoc.jar) and configure mannualy in your project.
+To import this project dependecy to your project you can use maven, gradle, etc. or download jar [snap-scheduler-core](https://oss.sonatype.org/service/local/repositories/releases/content/io/opensw/scheduler/snap-scheduler-core/0.11.0/snap-scheduler-core-0.11.0-javadoc.jar) and configure mannualy in your project.
 
 ### Maven
 ```xml
@@ -144,10 +144,10 @@ To import this project dependecy to your project you can use maven, gradle, etc.
 
 ### Gradle
 ```xml
-implementation 'io.opensw.scheduler:snap-scheduler-core:0.8.0'
+implementation 'io.opensw.scheduler:snap-scheduler-core:0.11.0'
 ```
 
-[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.8.0/jar) dependency management.
+[See all](https://search.maven.org/artifact/io.opensw.scheduler/snap-scheduler-core/0.11.0/jar) dependency management.
 
 ## 2. Create required database tables
 The Snap Scheduler mandatory tables that need to be created are "snap_scheduler" and "snap_task_audit" tables. 
@@ -198,7 +198,7 @@ In application.yml file you can configure snap scheduler properties.
 snap:
   scheduler:
     enabled: true
-    db-polling-interval: 1m
+    db-polling-interval: PT1M
 ```
 
 ## 5. Schedule your tasks
@@ -469,7 +469,7 @@ To configure a database diferent of application database you can configure it li
 snap:
   scheduler:
     enabled: true
-    db-polling-interval: 1m
+    db-polling-interval: PT1M
     datasource:
       url: ${PG_JDBC_URL:jdbc:postgresql://localhost/snap}
       username: ${PG_USRNAME:postgres}
