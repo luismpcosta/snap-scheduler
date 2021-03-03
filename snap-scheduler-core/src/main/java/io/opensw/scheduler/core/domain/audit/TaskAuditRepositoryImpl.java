@@ -31,7 +31,7 @@ public class TaskAuditRepositoryImpl implements TaskAuditRepository {
 
 	protected static final String INSERT_QUERY = "INSERT INTO snap_task_audit(task_key, task_method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-	protected static final String POSTGRE_INSERT_QUERY = "INSERT INTO snap_task_audit(key, method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?::jsonb);";
+	protected static final String POSTGRE_INSERT_QUERY = "INSERT INTO snap_task_audit(task_key, task_method, run_on, start_run, end_run, run_time_seconds, task_error) VALUES (?, ?, ?, ?, ?, ?, ?::jsonb);";
 	
 	@Autowired
 	public TaskAuditRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource,

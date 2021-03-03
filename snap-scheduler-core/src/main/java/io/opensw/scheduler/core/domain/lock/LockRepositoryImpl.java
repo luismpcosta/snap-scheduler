@@ -23,10 +23,13 @@ public class LockRepositoryImpl implements LockRepository {
 	private final DataSource dataSource;
 
 	// select task and lock
-	protected static final String LOCK_SELECT_QUERY = "SELECT task_key, task_method, lock_until, lock_at, lock_by FROM snap_lock WHERE task_key = ? AND task_method = ? FOR UPDATE";
+	protected static final String LOCK_SELECT_QUERY = "SELECT task_key, task_method, lock_until, lock_at, lock_by FROM snap_lock WHERE task_key = ? AND task_method = ? and lock_until < ? FOR UPDATE";
 
 	// insert lock
 	protected static final String LOCK_INSERT_QUERY = "INSERT INTO snap_lock (task_key, task_method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
+
+	// count lock
+	protected static final String LOCK_COUNT_QUERY = "SELECT COUNT(*) FROM snap_lock WHERE task_key = ? AND task_method = ?;";
 
 	@Autowired
 	public LockRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource ) {
@@ -41,13 +44,48 @@ public class LockRepositoryImpl implements LockRepository {
 		}
 
 		try ( Connection connection = dataSource.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(
-						LOCK_SELECT_QUERY, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE
-				) ) {
+				PreparedStatement countPreparedStatement = connection.prepareStatement( LOCK_COUNT_QUERY ) ) {
+			// set connection auto commit to true
 			connection.setAutoCommit( true );
 
+			// set parameters to count query
+			countPreparedStatement.setString( 1, key );
+			countPreparedStatement.setString( 2, method );
+			// execute query
+			ResultSet countResultSet = countPreparedStatement.executeQuery();
+			if ( countResultSet.next() ) {
+				int numberOfRows = countResultSet.getInt( 1 );
+				if ( numberOfRows == 0 ) {
+					return this.insertLock( connection, key, method, time, server );
+				}
+				else {
+					return this.updateTask( connection, key, method, time, server );
+				}
+			}
+		}
+		catch ( Exception e ) {
+			log.error(
+					"(INSERT) Can not acquire lock for key {} and method {}. Message error: {}", key, method,
+					e.getMessage()
+			);
+		}
+
+		return false;
+	}
+
+	private boolean updateTask( final Connection connection, final String key, final String method, final long time,
+			final String server )
+			throws DatabaseException {
+		if ( dataSource == null ) {
+			throw new DatabaseException();
+		}
+
+		try ( PreparedStatement preparedStatement = connection.prepareStatement(
+				LOCK_SELECT_QUERY, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE
+		) ) {
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
+			preparedStatement.setTimestamp( 3, Timestamp.from( Instant.now() ) );
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			if ( resultSet.next() ) {
@@ -71,17 +109,17 @@ public class LockRepositoryImpl implements LockRepository {
 			);
 		}
 
-		return this.insertLock( key, method, time, server );
+		return false;
 	}
 
-	private boolean insertLock( final String key, final String method, final long time, final String server ) {
-		try ( Connection connection = dataSource.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement( LOCK_INSERT_QUERY ) ) {
-			connection.setAutoCommit( true );
-
+	private boolean insertLock( final Connection connection, final String key, final String method, final long time,
+			final String server ) {
+		// When do not have register of task in lock table
+		try ( PreparedStatement preparedStatement = connection.prepareStatement( LOCK_INSERT_QUERY ) ) {
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );
-			preparedStatement.setTimestamp( 3, Timestamp.from( Instant.now().plus( time, ChronoUnit.SECONDS ) ) );
+			preparedStatement
+					.setTimestamp( 3, Timestamp.from( Instant.now().plus( time, ChronoUnit.SECONDS ) ) );
 			preparedStatement.setTimestamp( 4, Timestamp.from( Instant.now() ) );
 			preparedStatement.setString( 5, server );
 
