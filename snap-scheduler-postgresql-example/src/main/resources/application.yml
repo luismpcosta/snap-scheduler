@@ -29,7 +29,7 @@ spring:
   #
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: ${PG_JDBC_URL:jdbc:postgresql://localhost/bucket}
+    url: ${PG_JDBC_URL:jdbc:postgresql://localhost/snap}
     username: ${PG_USRNAME:postgres}
     password: ${PG_PASSWORD:root}
     hikari:

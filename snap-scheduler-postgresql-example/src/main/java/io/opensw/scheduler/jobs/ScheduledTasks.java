@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduledTasks {
 
 	@Scheduled(fixedRate = 30000)
-	@SnapLock(key = "REPORT_CURRENT_TIME", time = 60)
+	@SnapLock(key = "REPORT_CURRENT_TIME", time = 30)
 	public void reportCurrentTime() {
 		log.debug("The time is now {}", Instant.now());
 		try {
