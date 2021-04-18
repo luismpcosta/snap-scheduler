@@ -44,7 +44,7 @@ To import this project dependecy to your project you can use maven, gradle, etc.
 <dependency>
   <groupId>io.opensw.scheduler</groupId>
   <artifactId>snap-scheduler-core</artifactId>
-  <version>0.15.0</version>
+  <version>0.16.0</version>
 </dependency>
 ```
 
@@ -138,7 +138,7 @@ To import this project dependecy to your project you can use maven, gradle, etc.
 <dependency>
   <groupId>io.opensw.scheduler</groupId>
   <artifactId>snap-scheduler-core</artifactId>
-  <version>0.15.0</version>
+  <version>0.16.0</version>
 </dependency>
 ```
 

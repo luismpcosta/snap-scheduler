@@ -12,10 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ScheduledTasks {
 
-	@Scheduled(fixedRate = 30000)
+//	@Scheduled(fixedRate = 30000)
+	@Scheduled( cron = "0 38 15 * * *" )
 	@SnapLock(key = "REPORT_CURRENT_TIME", time = 30)
 	public void reportCurrentTime() {
-		log.debug("The time is now {}", Instant.now());
+		log.debug("==>>> The time is now {}", Instant.now());
 		try {
 			Thread.sleep( 10000 );
 		}
