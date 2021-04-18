@@ -1,5 +1,5 @@
 server:
-  port: ${SERVER_PORT:8118}
+  port: ${SERVER_PORT:8218}
   servlet.context-path: ${BASE_PATH:/}
   tomcat:
     accept-count: ${ACCEPT_COUNT:256}
