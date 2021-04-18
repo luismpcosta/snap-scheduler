@@ -23,7 +23,7 @@ public class LockRepositoryImpl implements LockRepository {
 	private final DataSource dataSource;
 
 	// select task and lock
-	protected static final String LOCK_SELECT_QUERY = "SELECT task_key, task_method, lock_until, lock_at, lock_by FROM snap_lock WHERE task_key = ? AND task_method = ? and lock_until < ? FOR UPDATE";
+	protected static final String LOCK_SELECT_QUERY = "SELECT task_key, task_method, lock_until, lock_at, lock_by FROM snap_lock WHERE task_key = ? AND task_method = ? and lock_until <= ? FOR UPDATE";
 
 	// insert lock
 	protected static final String LOCK_INSERT_QUERY = "INSERT INTO snap_lock (task_key, task_method, lock_until, lock_at, lock_by) VALUES (?, ?, ?, ?, ?);";
@@ -47,6 +47,7 @@ public class LockRepositoryImpl implements LockRepository {
 				PreparedStatement countPreparedStatement = connection.prepareStatement( LOCK_COUNT_QUERY ) ) {
 			// set connection auto commit to true
 			connection.setAutoCommit( true );
+			connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE );
 
 			// set parameters to count query
 			countPreparedStatement.setString( 1, key );
@@ -81,7 +82,7 @@ public class LockRepositoryImpl implements LockRepository {
 		}
 
 		try ( PreparedStatement preparedStatement = connection.prepareStatement(
-				LOCK_SELECT_QUERY, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE
+				LOCK_SELECT_QUERY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
 		) ) {
 			preparedStatement.setString( 1, key );
 			preparedStatement.setString( 2, method );

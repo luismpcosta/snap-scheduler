@@ -84,6 +84,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 						ResultSet.CONCUR_UPDATABLE
 				) ) {
 			connection.setAutoCommit( true );
+			connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE );
 
 			preparedStatement
 					.setTimestamp(
@@ -184,6 +185,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		try ( Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement( UPDATE_QUERY ) ) {
 			connection.setAutoCommit( true );
+			connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE );
 
 			preparedStatement.setTimestamp( 1, Timestamp.from( end ) );
 
@@ -211,6 +213,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 		try ( Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement( UPDATE_RECURRING_QUERY ) ) {
 			connection.setAutoCommit( true );
+			connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE );
 
 			preparedStatement.setTimestamp( 1, Timestamp.from( task.getRunAt() ) );
 			preparedStatement.setBoolean( 2, picked );
@@ -240,6 +243,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 				PreparedStatement preparedStatement = connection
 						.prepareStatement( this.updateNotRunnedQuery( this.dbPlatform ) ) ) {
 			connection.setAutoCommit( true );
+			connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE );
 
 			preparedStatement.setString( 1, server );
 
