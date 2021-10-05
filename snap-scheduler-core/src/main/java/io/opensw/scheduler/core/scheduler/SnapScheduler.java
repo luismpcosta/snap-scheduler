@@ -48,7 +48,7 @@ public class SnapScheduler {
 			boolean picked = false;
 			String server = null;
 
-			if ( minutes < 10 || minutes < ( properties.getDbPollingInterval().toMinutes() * 2 ) ) {
+			if ( minutes < 10 || minutes < ( properties.dbPollingIntervalMinutes() * 2 ) ) {
 				snapTaskHandler.handleTask( task );
 				picked = true;
 				server = ServerUtils.loadServerName();

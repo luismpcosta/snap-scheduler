@@ -38,6 +38,18 @@ public class SnapSchedulerProperties {
 		return dbPollingInterval.toMillis();
 	}
 	
+	/**
+	 * Database polling tasks interval
+	 * 
+	 * @return polling interval in minutes
+	 */
+	public long dbPollingIntervalMinutes() {
+		if ( dbPollingInterval == null || dbPollingInterval.isZero() || dbPollingInterval.isNegative() ) {
+			return 5;
+		}
+		return dbPollingInterval.toMinutes();
+	}
+	
 	@Data
 	public static class DatabaseConfig {
 
