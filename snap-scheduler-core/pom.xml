@@ -6,7 +6,7 @@
 
 	<groupId>io.opensw.scheduler</groupId>
 	<artifactId>snap-scheduler-core</artifactId>
-	<version>0.19.0</version>
+	<version>0.20.0</version>
 
 	<name>${project.artifactId}</name>
 	<description>Snap Scheduler it is a project to solve some common needs
@@ -103,6 +103,12 @@
 			<artifactId>maven-checkstyle-plugin</artifactId>
 			<version>${version.plugin.checkstyle}</version>
 			<type>maven-plugin</type>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.velocity</groupId>
+					<artifactId>velocity-tools</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Test dependencies -->
