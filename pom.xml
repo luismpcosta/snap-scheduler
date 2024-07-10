@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.opensw.scheduler</groupId>
 	<artifactId>snap-scheduler</artifactId>
-	<version>0.20.0</version>
+	<version>0.21.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>21</jdk.version>
 		<maven.compiler.source>${jdk.version}</maven.compiler.source>
 		<maven.compiler.target>${jdk.version}</maven.compiler.target>
 
 		<!-- Dependency versions -->
-		<spring-boot.version>2.6.7</spring-boot.version>
+		<spring-boot.version>3.3.1</spring-boot.version>
 	</properties>
 
 	<dependencyManagement>

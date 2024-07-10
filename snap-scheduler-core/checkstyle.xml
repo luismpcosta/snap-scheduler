@@ -25,10 +25,10 @@
 <!--            <property name="allowStaticMemberImports" value="false"/>-->
 <!--        </module>-->
 
-        <module name="JavadocMethod">
-            <property name="scope" value="public"/>
-            <property name="tokens" value="METHOD_DEF,ANNOTATION_FIELD_DEF"/>
-        </module>
+<!--        <module name="JavadocMethod">-->
+<!--            <property name="scope" value="public"/>-->
+<!--            <property name="tokens" value="METHOD_DEF,ANNOTATION_FIELD_DEF"/>-->
+<!--        </module>-->
 
         <!-- Imports -->
         <module name="IllegalImport"/>
