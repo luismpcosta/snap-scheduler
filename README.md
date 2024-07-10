@@ -505,7 +505,7 @@ The release notes
 
 ## 0.22.0
 * Upgrade spring-boot release to 3.3.1
-* Upgrade java to 21 version
+* Upgrade java to version 21
   
 ## 0.18.0
 * Upgrade spring-boot release to 2.6.2
