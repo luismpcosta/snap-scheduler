@@ -55,8 +55,6 @@
 		<sonar.coverage.exclusions>**Properties.java, **Exception.java,
 			**Config.java, **Utils.java
 		</sonar.coverage.exclusions>
-		<sonar.junit.reportsPath>target/surefire-reports
-		</sonar.junit.reportsPath>
 	</properties>
 
 	<dependencyManagement>
@@ -133,14 +131,35 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<!-- END test dependencies -->
 	</dependencies>
 
 	<build>
 		<plugins>
-
-			<!-- Coverage Plugins -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.5.0.1254</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -148,7 +167,8 @@
 				<configuration>
 					<forkCount>0</forkCount>
 					<testFailureIgnore>true</testFailureIgnore>
-					<argLine>--add-modules java.base ${argLine} -Xmx2048m</argLine>
+					<argLine>--add-modules java.base ${argLine}
+						-Xmx2048m</argLine>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -164,10 +184,10 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>3.0.0-M5</version>
 				<configuration>
-					<argLine>--add-modules java.base ${argLine} -Xmx2048m</argLine>
+					<argLine>--add-modules java.base ${argLine}
+						-Xmx2048m</argLine>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 
