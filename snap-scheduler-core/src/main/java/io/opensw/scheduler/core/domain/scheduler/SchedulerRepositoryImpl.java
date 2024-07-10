@@ -45,7 +45,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 	// select tasks in period and lock task
 	protected static final String MYSQL_POSTGRE_SELECT_QUERY = "SELECT name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = false AND run_at < ? order by run_at asc FOR UPDATE;";
 
-	protected static final String MSSQL_H2_SELECT_QUERY = "SELECT name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = 0 AND run_at < ? order by run_at asc FOR UPDATE;";
+	protected static final String MSSQL_H2_SELECT_QUERY = "SELECT name, task_key, type, task_class, task_data, task_data_class, run_at, recurrence, picked, picked_by FROM snap_scheduler where picked = false AND run_at < ? order by run_at asc FOR UPDATE;";
 
 	// update task after run
 	protected static final String UPDATE_QUERY = "UPDATE snap_scheduler SET end_run = ? WHERE task_key = ?;";
@@ -60,7 +60,7 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 
 	protected static final String MSSQL_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = 0 WHERE picked = 1 AND end_run is null AND picked_by = ?;";
 
-	protected static final String H2_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = 0 WHERE picked = 1 AND end_run is null AND picked_by = ?;";
+	protected static final String H2_UPDATE_NOT_RUN_QUERY = "UPDATE snap_scheduler SET picked_by = null, picked = 0 WHERE picked = true AND end_run is null AND picked_by = ?;";
 
 	@Autowired
 	public SchedulerRepositoryImpl( @Qualifier( "snapDataSource" ) final DataSource dataSource,

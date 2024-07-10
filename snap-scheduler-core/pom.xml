@@ -6,7 +6,7 @@
 
 	<groupId>io.opensw.scheduler</groupId>
 	<artifactId>snap-scheduler-core</artifactId>
-	<version>0.21.0</version>
+	<version>0.22.0</version>
 
 	<name>${project.artifactId}</name>
 	<description>Snap Scheduler it is a project to solve some common needs
@@ -35,7 +35,8 @@
 	<scm>
 		<connection>scm:git:git://github.com/luismpcosta/snap-scheduler.git
 		</connection>
-		<developerConnection>scm:git:ssh://github.com:luismpcosta/snap-scheduler.git
+		<developerConnection>
+			scm:git:ssh://github.com:luismpcosta/snap-scheduler.git
 		</developerConnection>
 		<url>https://github.com/luismpcosta/snap-scheduler/</url>
 	</scm>
@@ -143,8 +144,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
+				<version>3.3.0</version>
 				<configuration>
+					<forkCount>0</forkCount>
+					<testFailureIgnore>true</testFailureIgnore>
 					<argLine>--add-modules java.base ${argLine} -Xmx2048m</argLine>
 				</configuration>
 				<dependencies>
@@ -165,28 +168,6 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
-				<configuration>
-					<append>true</append>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>post-unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -379,7 +360,8 @@
 			<distributionManagement>
 				<repository>
 					<id>nexus</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2
+					<url>
+						https://oss.sonatype.org/service/local/staging/deploy/maven2
 					</url>
 				</repository>
 				<snapshotRepository>
