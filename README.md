@@ -503,6 +503,10 @@ This project was completely free and open source, under [Apache 2.0 License](htt
 # Releases
 The release notes
 
+## 0.22.0
+* Upgrade spring-boot release to 3.3.1
+* Upgrade java to 21 version
+  
 ## 0.18.0
 * Upgrade spring-boot release to 2.6.2
 
